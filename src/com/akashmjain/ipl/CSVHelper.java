@@ -4,7 +4,6 @@ import org.jetbrains.annotations.TestOnly;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -26,7 +25,14 @@ public class CSVHelper {
             matches.add(createMatchObject(line));
         }
         return matches;
-
+    }
+    public ArrayList<Delivery> formatDataForDelivery() {
+        ArrayList<Delivery> deliveries = new ArrayList<>();
+        ArrayList<String> lines =  separateLines();
+        for(String line : lines) {
+            deliveries.add(createDeliveryObject(line));
+        }
+        return deliveries;
     }
 
     private ArrayList<String> separateLines() {
@@ -61,6 +67,52 @@ public class CSVHelper {
         }
 
         return list;
+    }
+    private Delivery createDeliveryObject(String deliveryTuple) {
+        ArrayList<String> list = readTillCommaAndWhateverYouReadPlaceItIntoAStringArray(deliveryTuple);
+        String match_id             = list.get(0);
+        String inning               = list.get(1);
+        String batting_team         = list.get(2);
+        String bowling_team         = list.get(3);
+        String over                 = list.get(4);
+        String ball                 = list.get(5);
+        String batsman              = list.get(6);
+        String non_striker          = list.get(7);
+        String bowler               = list.get(8);
+        String is_super_over        = list.get(9);
+        String wide_runs            = list.get(10);
+        String bye_runs             = list.get(11);
+        String legbye_runs          = list.get(12);
+        String noball_runs          = list.get(13);
+        String penalty_runs         = list.get(14);
+        String batsman_runs         = list.get(15);
+        String extra_runs           = list.get(16);
+        String total_runs           = list.get(17);
+        String player_dismissed     = list.get(18);
+        String dismissal_kind       = list.get(19);
+
+        return new Delivery(
+                match_id,
+                inning,
+                batting_team,
+                bowling_team,
+                over,
+                ball,
+                batsman,
+                non_striker,
+                bowler,
+                is_super_over,
+                wide_runs,
+                bye_runs,
+                legbye_runs,
+                noball_runs,
+                penalty_runs,
+                batsman_runs,
+                extra_runs,
+                total_runs,
+                player_dismissed,
+                dismissal_kind
+        );
     }
     private Match createMatchObject(String matchTuple) {
 
