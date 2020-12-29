@@ -56,7 +56,6 @@ public class CSVHelper {
             }
         }
         // if last is comma and is empty, add extra empty string to list
-        System.out.println();
         if(line.charAt(line.length() - 1) == ',') {
             list.add("");
         }
