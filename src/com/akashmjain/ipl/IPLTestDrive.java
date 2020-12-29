@@ -1,5 +1,7 @@
 package com.akashmjain.ipl;
 
+import com.akashmjain.ipl.filter.deliveriesFilter.DeliveryFilter;
+import com.akashmjain.ipl.filter.deliveriesFilter.ExtraConcidedRunFilter;
 import com.akashmjain.ipl.filter.matchFilter.MatchFilter;
 import com.akashmjain.ipl.filter.matchFilter.WonMatchesPerTeamFilter;
 import com.akashmjain.ipl.filter.matchFilter.YearMatchFilter;
@@ -15,6 +17,7 @@ public class IPLTestDrive {
     public static void main(String[] args) throws Exception {
         IPLTestDrive iplTestDrive = new IPLTestDrive();
         iplTestDrive.csvTestDelivery();
+        iplTestDrive.extraRunFilter();
 //        iplTestDrive.csvTestMatch();
 //        iplTestDrive.filterTestWon();
     }
@@ -38,6 +41,20 @@ public class IPLTestDrive {
             }
         });
     }
+    public void extraRunFilter() {
+        ExtraConcidedRunFilter deliveryFilter = new ExtraConcidedRunFilter();
+        HashMap<String, Integer> hashMap = deliveryFilter.filter(deliveries);
+        System.out.println(hashMap);
+//        HashMap<String, LinkedList<Delivery>> hashMap = deliveryFilter.filter(deliveries);
+//        hashMap.forEach(new BiConsumer<String, LinkedList<Delivery>>() {
+//            @Override
+//            public void accept(String s, LinkedList<Delivery> deliveries) {
+//                System.out.println(s + " : " + deliveries);
+//            }
+//        });
+
+
+    }
     public void csvTestMatch() throws Exception {
         File matchData = new File("./data/matches.csv");
         CSVHelper csvHelper = new CSVHelper(matchData);
@@ -50,8 +67,9 @@ public class IPLTestDrive {
         File matchData = new File("./data/deliveries.csv");
         CSVHelper csvHelper = new CSVHelper(matchData);
         deliveries = csvHelper.formatDataForDelivery();
-        for(Delivery delivery : deliveries) {
-            System.out.println(delivery);
-        }
+//        for(Delivery delivery : deliveries) {
+//            System.out.println(delivery);
+//        }
     }
+
 }
