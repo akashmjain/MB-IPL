@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class CSVHelper {
     private File file;
-
+    
     public CSVHelper(File file) throws Exception{
         if(file.canRead()) {
             this.file = file;
@@ -68,6 +68,7 @@ public class CSVHelper {
 
         return list;
     }
+
     private Delivery createDeliveryObject(String deliveryTuple) {
         ArrayList<String> list = readTillCommaAndWhateverYouReadPlaceItIntoAStringArray(deliveryTuple);
         String match_id             = list.get(0);

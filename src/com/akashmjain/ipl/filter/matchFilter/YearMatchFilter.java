@@ -12,8 +12,9 @@ public class YearMatchFilter extends MatchFilter {
     @Override
     public HashMap<String, LinkedList<Match>> filter(ArrayList<Match> matches) {
         for(Match match : matches ) {
-            LinkedList<Match> linkedList = pushElementIntoLinkedList(match, match.getSeason(), noOfMatchesPerYear);
-            noOfMatchesPerYear.put(match.getSeason(), linkedList);
+            String key = match.getSeason();
+            LinkedList<Match> linkedList = pushElementIntoLinkedList(match, key, noOfMatchesPerYear);
+            noOfMatchesPerYear.put(key, linkedList);
         }
         return noOfMatchesPerYear;
     }
