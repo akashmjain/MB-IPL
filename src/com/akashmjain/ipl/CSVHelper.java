@@ -1,6 +1,6 @@
 package com.akashmjain.ipl;
 
-import org.jetbrains.annotations.TestOnly;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -158,12 +158,5 @@ public class CSVHelper {
             umpire2,
             umpire3
         );
-    }
-    @TestOnly
-    public static void main(String[] args) throws Exception {
-        CSVHelper csvHelper = new CSVHelper(new File("./data/matches.small.csv"));
-
-        String data = "id,season,city,date,team1,team2,toss_winner,toss_decision,result,dl_applied,winner,win_by_runs,win_by_wickets,player_of_match,venue,umpire1,umpire2,umpire3";
-        System.out.println(csvHelper.readTillCommaAndWhateverYouReadPlaceItIntoAStringArray(data));
     }
 }

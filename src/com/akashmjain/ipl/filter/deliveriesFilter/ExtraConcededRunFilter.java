@@ -5,7 +5,6 @@ import com.akashmjain.ipl.Match;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 public class ExtraConcededRunFilter extends DeliveryFilter {
     public HashMap<String, Integer> filter(ArrayList<Delivery> deliveries, ArrayList<Match> matches, String year) {
