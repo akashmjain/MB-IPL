@@ -1,7 +1,8 @@
 package com.akashmjain.ipl;
 
 import com.akashmjain.ipl.filter.deliveriesFilter.DeliveryFilter;
-import com.akashmjain.ipl.filter.deliveriesFilter.ExtraConcidedRunFilter;
+import com.akashmjain.ipl.filter.deliveriesFilter.EconomicalBowlers;
+import com.akashmjain.ipl.filter.deliveriesFilter.ExtraConcededRunFilter;
 import com.akashmjain.ipl.filter.matchFilter.MatchFilter;
 import com.akashmjain.ipl.filter.matchFilter.WonMatchesPerTeamFilter;
 import com.akashmjain.ipl.filter.matchFilter.YearMatchFilter;
@@ -15,11 +16,12 @@ public class IPLTestDrive {
 
     public static void main(String[] args) throws Exception {
         IPLTestDrive        iplTestDrive   = new IPLTestDrive();
-        ArrayList<Match>    matches        = iplTestDrive.csvTestMatch();
-        ArrayList<Delivery> deliveries     = iplTestDrive.csvTestDelivery();
-        iplTestDrive.extraRunFilter(deliveries, matches, "2016");
+        ArrayList<Match>    matches        = iplTestDrive.csvMatchTest();
+        ArrayList<Delivery> deliveries     = iplTestDrive.csvDeliveryTest();
+        System.out.println(iplTestDrive.economicalBowlers(deliveries, matches, "2015", 5));
+
     }
-    public void filterTest(ArrayList<Match> matches) {
+    public void yearFilterTest(ArrayList<Match> matches) {
         MatchFilter matchFilter = new YearMatchFilter();
         HashMap<String, LinkedList<Match>> hashMap = matchFilter.filter(matches);
         hashMap.forEach(new BiConsumer<String, LinkedList<Match>>() {
@@ -29,7 +31,7 @@ public class IPLTestDrive {
             }
         });
     }
-    public void filterTestWon(ArrayList<Match> matches) {
+    public void wonFilterTest(ArrayList<Match> matches) {
         MatchFilter matchFilter = new WonMatchesPerTeamFilter();
         HashMap<String, LinkedList<Match>> hashMap = matchFilter.filter(matches);
         hashMap.forEach(new BiConsumer<String, LinkedList<Match>>() {
@@ -39,12 +41,17 @@ public class IPLTestDrive {
             }
         });
     }
-    public void extraRunFilter(ArrayList<Delivery> deliveries, ArrayList<Match> matches, String year) {
-        DeliveryFilter deliveryFilter = new ExtraConcidedRunFilter();
+    public HashMap<String, Integer> extraRunFilterTest(ArrayList<Delivery> deliveries, ArrayList<Match> matches, String year) {
+        ExtraConcededRunFilter deliveryFilter = new ExtraConcededRunFilter();
         HashMap<String, Integer> hashMap = deliveryFilter.filter(deliveries, matches,year);
-        System.out.println(hashMap);
+        return hashMap;
     }
-    public ArrayList<Match> csvTestMatch() throws Exception {
+    public HashMap<String, Float> economicalBowlers(ArrayList<Delivery> deliveries, ArrayList<Match> matches, String year, int top) {
+        EconomicalBowlers deliveryFilter = new EconomicalBowlers();
+        HashMap<String, Float> hashMap = deliveryFilter.filter(deliveries, matches, year);
+        return hashMap;
+    }
+    public ArrayList<Match> csvMatchTest() throws Exception {
         ArrayList<Match> matches;
         File matchData = new File("./data/matches.csv");
         CSVHelper csvHelper = new CSVHelper(matchData);
@@ -52,7 +59,7 @@ public class IPLTestDrive {
         return matches;
     }
 
-    public ArrayList<Delivery> csvTestDelivery() throws Exception {
+    public ArrayList<Delivery> csvDeliveryTest() throws Exception {
         ArrayList<Delivery> deliveries;
         File matchData = new File("./data/deliveries.csv");
         CSVHelper csvHelper = new CSVHelper(matchData);
