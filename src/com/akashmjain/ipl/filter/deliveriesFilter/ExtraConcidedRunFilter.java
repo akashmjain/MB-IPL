@@ -13,33 +13,39 @@ public class ExtraConcidedRunFilter implements DeliveryFilter {
      *  step 1:
      */
 
-    HashMap<String, Integer> hashMap = new HashMap<>();
+
 
 
     @Override
     public HashMap<String, Integer> filter(ArrayList<Delivery> list, ArrayList<Match> matches, String year) {
         // filter the list for year 2017
-        HashMap<String, Integer> hm = filterByYear(matches, year);
-        for(Delivery delivery : list) {
-            String key = delivery.getMatch_id();
-            Integer run = hm.get(key);
-            if(run != null) {
-                run += Integer.parseInt(delivery.getExtra_runs());
-                hm.put(key, run);
+        ArrayList<Match> filteredByYear = filterByYear(matches, year);
+        ArrayList<Delivery> filteredDelivery = filterDeliveryByMatchID(list ,filteredByYear);
+        HashMap<String, Integer> answer = getTheAnswer(filteredDelivery);
+        return null;
+    }
+    private HashMap<String, Integer> getTheAnswer(ArrayList<Delivery> fd) {
+            
+        return null;
+    }
+    private ArrayList<Delivery> filterDeliveryByMatchID(ArrayList<Delivery> deliveries, ArrayList<Match> matches) {
+        ArrayList<Delivery> sortedDeliveries = new ArrayList<>();
+        for(Match match : matches) {
+            for(Delivery delivery : deliveries) {
+                if(match.getId().equals(delivery.getMatch_id())) {
+                    sortedDeliveries.add(delivery);
+                }
             }
         }
-
-        return hm;
+        return sortedDeliveries;
     }
-
-    private HashMap<String, Integer> filterByYear(ArrayList<Match> matches, String year) {
-        HashMap<String, Integer> yearlySortedMatchHashMap = new HashMap<>();
+    private ArrayList<Match> filterByYear(ArrayList<Match> matches, String year) {
+        ArrayList<Match> yearlySortedMatchArray = new ArrayList<>();
         for(Match match : matches) {
             if(match.getSeason().equals(year)) {
-                
-                yearlySortedMatchHashMap.put(match.getId(), 0);
+                yearlySortedMatchArray.add(match);
             }
         }
-        return yearlySortedMatchHashMap;
+        return yearlySortedMatchArray;
     }
 }
