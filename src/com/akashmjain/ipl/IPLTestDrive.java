@@ -1,6 +1,5 @@
 package com.akashmjain.ipl;
 
-import com.akashmjain.ipl.filter.deliveriesFilter.DeliveryFilter;
 import com.akashmjain.ipl.filter.deliveriesFilter.EconomicalBowlers;
 import com.akashmjain.ipl.filter.deliveriesFilter.ExtraConcededRunFilter;
 import com.akashmjain.ipl.filter.matchFilter.MatchFilter;
@@ -9,7 +8,6 @@ import com.akashmjain.ipl.filter.matchFilter.YearMatchFilter;
 
 import java.io.File;
 import java.util.*;
-import java.util.function.BiConsumer;
 
 
 public class IPLTestDrive {
@@ -21,25 +19,15 @@ public class IPLTestDrive {
         System.out.println(iplTestDrive.economicalBowlers(deliveries, matches, "2015", 5));
 
     }
-    public void yearFilterTest(ArrayList<Match> matches) {
+    public HashMap<String, LinkedList<Match>> yearFilterTest(ArrayList<Match> matches) {
         MatchFilter matchFilter = new YearMatchFilter();
         HashMap<String, LinkedList<Match>> hashMap = matchFilter.filter(matches);
-        hashMap.forEach(new BiConsumer<String, LinkedList<Match>>() {
-            @Override
-            public void accept(String s, LinkedList<Match> matches) {
-                System.out.println(s + " : " + matches.size());
-            }
-        });
+        return hashMap;
     }
-    public void wonFilterTest(ArrayList<Match> matches) {
+    public HashMap<String, LinkedList<Match>> wonFilterTest(ArrayList<Match> matches) {
         MatchFilter matchFilter = new WonMatchesPerTeamFilter();
         HashMap<String, LinkedList<Match>> hashMap = matchFilter.filter(matches);
-        hashMap.forEach(new BiConsumer<String, LinkedList<Match>>() {
-            @Override
-            public void accept(String s, LinkedList<Match> matches) {
-                System.out.println(s + " : " + matches.size());
-            }
-        });
+        return hashMap;
     }
     public HashMap<String, Integer> extraRunFilterTest(ArrayList<Delivery> deliveries, ArrayList<Match> matches, String year) {
         ExtraConcededRunFilter deliveryFilter = new ExtraConcededRunFilter();
@@ -48,7 +36,7 @@ public class IPLTestDrive {
     }
     public HashMap<String, Float> economicalBowlers(ArrayList<Delivery> deliveries, ArrayList<Match> matches, String year, int top) {
         EconomicalBowlers deliveryFilter = new EconomicalBowlers();
-        HashMap<String, Float> hashMap = deliveryFilter.filter(deliveries, matches, year);
+        HashMap<String, Float> hashMap = deliveryFilter.filter(deliveries, matches, year, top);
         return hashMap;
     }
     public ArrayList<Match> csvMatchTest() throws Exception {

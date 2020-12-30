@@ -67,16 +67,18 @@ public class EconomicalBowlers extends DeliveryFilter{
         }
     }
 
-    public HashMap<String, Float> filter(ArrayList<Delivery> deliveries, ArrayList<Match> matches, String year) {
+    public HashMap<String, Float> filter(ArrayList<Delivery> deliveries, ArrayList<Match> matches, String year, int top) {
         ArrayList<Match> filteredByYear = filterByYear(matches, year);
         ArrayList<Delivery> filteredDelivery = filterDeliveryByMatchID(deliveries ,filteredByYear);
         HashMap<String, Float> hashMap = answer(filteredDelivery);
-        hashMap = sortByValue(hashMap);
-        System.out.println(hashMap);
+        hashMap = getTop(hashMap, top);
+//        hashMap = getTop(hashMap, top);
         return hashMap;
     }
 
-    public static HashMap<String, Float> sortByValue(HashMap<String, Float> hm)
+
+
+    public static HashMap<String, Float> getTop(HashMap<String, Float> hm, int top)
     {
         List<Map.Entry<String, Float> > list =
                 new LinkedList<Map.Entry<String, Float> >(hm.entrySet());
@@ -90,13 +92,14 @@ public class EconomicalBowlers extends DeliveryFilter{
             }
         });
         HashMap<String, Float> temp = new LinkedHashMap<String, Float>();
-        for (Map.Entry<String, Float> aa : list) {
+        for (int i = 0; i < top; i++) {
+            Map.Entry<String, Float> aa = list.get(i);
             temp.put(aa.getKey(), aa.getValue());
         }
+//        for (Map.Entry<String, Float> aa : list) {
+//            temp.put(aa.getKey(), aa.getValue());
+//        }
         return temp;
-    }
-    private HashMap<String, Float> sorting(HashMap<String, Float> hashMap) {
-        return  null;
     }
 
     private HashMap<String, Float> answer(ArrayList<Delivery> filteredDelivery) {
