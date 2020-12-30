@@ -8,26 +8,15 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 public class ExtraConcidedRunFilter implements DeliveryFilter {
-    /*
-     * algorithm :
-     *  step 1:
-     */
-
-
-
-
     @Override
     public HashMap<String, Integer> filter(ArrayList<Delivery> list, ArrayList<Match> matches, String year) {
         // filter the list for year 2017
         ArrayList<Match> filteredByYear = filterByYear(matches, year);
         ArrayList<Delivery> filteredDelivery = filterDeliveryByMatchID(list ,filteredByYear);
-        HashMap<String, Integer> answer = getTheAnswer(filteredDelivery);
-        return null;
+        HashMap<String, Integer> hashMap = teamViseRuns(filteredDelivery);
+        return hashMap;
     }
-    private HashMap<String, Integer> getTheAnswer(ArrayList<Delivery> fd) {
-            
-        return null;
-    }
+
     private ArrayList<Delivery> filterDeliveryByMatchID(ArrayList<Delivery> deliveries, ArrayList<Match> matches) {
         ArrayList<Delivery> sortedDeliveries = new ArrayList<>();
         for(Match match : matches) {
@@ -48,4 +37,22 @@ public class ExtraConcidedRunFilter implements DeliveryFilter {
         }
         return yearlySortedMatchArray;
     }
+
+    private HashMap<String, Integer> teamViseRuns(ArrayList<Delivery> fd) {
+        HashMap<String, Integer> answer = new HashMap<>();
+        for(Delivery d: fd) {
+            String key = d.getBatting_team();
+            Integer value = answer.get(key);
+            int run = Integer.parseInt(d.getExtra_runs());
+            if(value == null) {
+                value = run;
+            } else {
+                value += run;
+            }
+            answer.put(key, value);
+        }
+        return answer;
+    }
+
+
 }
