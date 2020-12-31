@@ -1,57 +1,18 @@
 package com.akashmjain.ipl;
 
-import com.akashmjain.ipl.filter.deliveriesFilter.EconomicalBowlers;
-import com.akashmjain.ipl.filter.deliveriesFilter.ExtraConcededRunFilter;
-import com.akashmjain.ipl.filter.matchFilter.MatchFilter;
-import com.akashmjain.ipl.filter.matchFilter.WonMatchesPerTeamFilter;
-import com.akashmjain.ipl.filter.matchFilter.YearMatchFilter;
+import com.akashmjain.ipl.filter.FilterInterface;
 
-import java.io.File;
 import java.util.*;
 
 
 public class IPLTestDrive {
 
     public static void main(String[] args) throws Exception {
-        IPLTestDrive        iplTestDrive   = new IPLTestDrive();
-        ArrayList<Match>    matches        = iplTestDrive.csvMatchTest();
-        ArrayList<Delivery> deliveries     = iplTestDrive.csvDeliveryTest();
-        System.out.println(iplTestDrive.economicalBowlers(deliveries, matches, "2015", 5));
-
-    }
-    public HashMap<String, LinkedList<Match>> yearFilterTest(ArrayList<Match> matches) {
-        MatchFilter matchFilter = new YearMatchFilter();
-        HashMap<String, LinkedList<Match>> hashMap = matchFilter.filter(matches);
-        return hashMap;
-    }
-    public HashMap<String, LinkedList<Match>> wonFilterTest(ArrayList<Match> matches) {
-        MatchFilter matchFilter = new WonMatchesPerTeamFilter();
-        HashMap<String, LinkedList<Match>> hashMap = matchFilter.filter(matches);
-        return hashMap;
-    }
-    public HashMap<String, Integer> extraRunFilterTest(ArrayList<Delivery> deliveries, ArrayList<Match> matches, String year) {
-        ExtraConcededRunFilter deliveryFilter = new ExtraConcededRunFilter();
-        HashMap<String, Integer> hashMap = deliveryFilter.filter(deliveries, matches,year);
-        return hashMap;
-    }
-    public HashMap<String, Float> economicalBowlers(ArrayList<Delivery> deliveries, ArrayList<Match> matches, String year, int top) {
-        EconomicalBowlers deliveryFilter = new EconomicalBowlers();
-        HashMap<String, Float> hashMap = deliveryFilter.filter(deliveries, matches, year, top);
-        return hashMap;
-    }
-    public ArrayList<Match> csvMatchTest() throws Exception {
-        ArrayList<Match> matches;
-        File matchData = new File("./data/matches.csv");
-        CSVHelper csvHelper = new CSVHelper(matchData);
-        matches = csvHelper.formatDataForMatches();
-        return matches;
+        FilterInterface filterFacade   = new FilterFacade();
+        filterFacade.numberOfMatchesWonOfAllTeamsOverAllYear();
+        filterFacade.numberOfMatchesPlayedPerYearForAllYear();
+        filterFacade.yearWiseTopEconomicalBoweler("2015", 5);
+        filterFacade.yearWiseExtraRunConcededPerTeam("2016");
     }
 
-    public ArrayList<Delivery> csvDeliveryTest() throws Exception {
-        ArrayList<Delivery> deliveries;
-        File matchData = new File("./data/deliveries.csv");
-        CSVHelper csvHelper = new CSVHelper(matchData);
-        deliveries = csvHelper.formatDataForDelivery();
-        return deliveries;
-    }
 }

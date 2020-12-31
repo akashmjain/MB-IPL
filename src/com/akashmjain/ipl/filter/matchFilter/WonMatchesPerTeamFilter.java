@@ -13,7 +13,8 @@ public class WonMatchesPerTeamFilter extends MatchFilter {
 
         for(Match match : matches) {
             LinkedList<Match> linkedList = pushElementIntoLinkedList(match, match.getWinner(),noOfMatchesWonPerTeam);
-            noOfMatchesWonPerTeam.put(match.getWinner(), linkedList);
+            String winner = match.getWinner().equals("") ? "NO WINNER" : match.getWinner();
+            noOfMatchesWonPerTeam.put(winner, linkedList);
         }
         return noOfMatchesWonPerTeam;
     }
