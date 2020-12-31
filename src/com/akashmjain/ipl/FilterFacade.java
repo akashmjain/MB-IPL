@@ -1,6 +1,5 @@
 package com.akashmjain.ipl;
 
-import com.akashmjain.ipl.filter.FilterInterface;
 import com.akashmjain.ipl.filter.deliveriesFilter.EconomicalBowlers;
 import com.akashmjain.ipl.filter.deliveriesFilter.ExtraConcededRunFilter;
 import com.akashmjain.ipl.filter.matchFilter.MatchFilter;
@@ -11,7 +10,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Locale;
 import java.util.function.BiConsumer;
 
 public class FilterFacade implements FilterInterface {
@@ -71,7 +69,7 @@ public class FilterFacade implements FilterInterface {
         });
     }
     @Override
-    public void yearWiseTopEconomicalBoweler(String year, int top) {
+    public void yearWiseTopEconomicalBowler(String year, int top) {
 
         System.out.println("==============================================================");
         System.out.println("year Wise top economical Boweler".toUpperCase() + " IN YEAR " + year);
