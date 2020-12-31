@@ -2,8 +2,7 @@ package com.akashmjain.ipl;
 
 
 public class IPLTestDrive {
-
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         FilterInterface filterFacade   = new FilterFacade();
         filterFacade.numberOfMatchesWonOfAllTeamsOverAllYear();
         filterFacade.numberOfMatchesPlayedPerYearForAllYear();
