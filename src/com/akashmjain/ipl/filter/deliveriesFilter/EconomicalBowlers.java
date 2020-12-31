@@ -71,8 +71,8 @@ public class EconomicalBowlers extends DeliveryFilter{
         ArrayList<Match> filteredByYear = filterByYear(matches, year);
         ArrayList<Delivery> filteredDelivery = filterDeliveryByMatchID(deliveries ,filteredByYear);
         HashMap<String, Float> hashMap = answer(filteredDelivery);
+        top = top < 0 ? 1 : Math.min(top, hashMap.size());
         hashMap = getTop(hashMap, top);
-//        hashMap = getTop(hashMap, top);
         return hashMap;
     }
 
@@ -96,9 +96,6 @@ public class EconomicalBowlers extends DeliveryFilter{
             Map.Entry<String, Float> aa = list.get(i);
             temp.put(aa.getKey(), aa.getValue());
         }
-//        for (Map.Entry<String, Float> aa : list) {
-//            temp.put(aa.getKey(), aa.getValue());
-//        }
         return temp;
     }
 
