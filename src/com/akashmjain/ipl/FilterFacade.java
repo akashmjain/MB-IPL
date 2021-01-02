@@ -1,5 +1,6 @@
 package com.akashmjain.ipl;
 
+import com.akashmjain.ipl.filter.deliveriesFilter.CatchFilter;
 import com.akashmjain.ipl.filter.deliveriesFilter.EconomicalBowlers;
 import com.akashmjain.ipl.filter.deliveriesFilter.ExtraConcededRunFilter;
 import com.akashmjain.ipl.filter.matchFilter.MatchFilter;
@@ -13,83 +14,75 @@ import java.util.LinkedList;
 import java.util.function.BiConsumer;
 
 public class FilterFacade implements FilterInterface {
-    private final String matchFile = "./data/matches.csv";
-    private final String deliveryFile = "./data/deliveries.csv";
-    private final ArrayList<Delivery> deliveries;
-    private final ArrayList<Match> matches;
+    private final static String matchFile = "./data/matches.csv";
+    private final static String deliveryFile = "./data/deliveries.csv";
+    private final static ArrayList<Match> matches = csvMatchTest();
+    private final static ArrayList<Delivery> deliveries = csvDeliveryTest();
 
-    public FilterFacade() {
-        matches = csvMatchTest();
-        deliveries = csvDeliveryTest();
-    }
     @Override
     public void numberOfMatchesPlayedPerYearForAllYear() {
-        System.out.println("==============================================================");
-        System.out.println("number Of Matches Played Per Year For All Year".toUpperCase());
-        System.out.println("==============================================================");
+        utilityLog("number Of Matches Won of all teams over all year");
+
         MatchFilter matchFilter = new YearMatchFilter();
         HashMap<String, LinkedList<Match>> hashMap = matchFilter.filter(matches);
-        hashMap.forEach(new BiConsumer<String, LinkedList<Match>>() {
-            @Override
-            public void accept(String s, LinkedList<Match> matches) {
-                System.out.println(s + " : " + matches);
-            }
-        });
+
+        utilityPrintResult(hashMap);
     }
     @Override
     public void numberOfMatchesWonOfAllTeamsOverAllYear() {
-        System.out.println("==============================================================");
-        System.out.println("number Of Matches Won of all teams over all year".toUpperCase());
-        System.out.println("==============================================================");
+        utilityLog("number Of Matches Won of all teams over all year");
+
 
         MatchFilter matchFilter = new WonMatchesPerTeamFilter();
         HashMap<String, LinkedList<Match>> hashMap = matchFilter.filter(matches);
-        hashMap.forEach(new BiConsumer<String, LinkedList<Match>>() {
-            @Override
-            public void accept(String s, LinkedList<Match> matches) {
-                System.out.println(s + " : " + matches);
-            }
-        });
+        utilityPrintResult(hashMap);
     }
     @Override
     public void yearWiseExtraRunConcededPerTeam(String year) {
 
-        System.out.println("==============================================================");
-        System.out.println("year Wise Extra Run Conceded Per Team".toUpperCase() + " IN YEAR " + year);
-        System.out.println("==============================================================");
-
+        utilityLog("year Wise Extra Run Conceded Per Team in year " + year);
 
         ExtraConcededRunFilter deliveryFilter = new ExtraConcededRunFilter();
         HashMap<String, Integer> hashMap = deliveryFilter.filter(deliveries, matches,year);
-        hashMap.forEach(new BiConsumer<String, Integer>() {
-            @Override
-            public void accept(String s, Integer integer) {
-                System.out.println(s + " : " + integer);
-            }
-        });
+
+        utilityPrintResult(hashMap);
     }
     @Override
     public void yearWiseTopEconomicalBowler(String year, int top) {
 
-        System.out.println("==============================================================");
-        System.out.println("year Wise top economical Boweler".toUpperCase() + " IN YEAR " + year);
-        System.out.println("==============================================================");
-
+        utilityLog("year Wise top economical Bowler in year" + year);
         EconomicalBowlers deliveryFilter = new EconomicalBowlers();
-        HashMap<String, Float> hashMap = deliveryFilter.filter(deliveries, matches, year, top);
-        hashMap.forEach(new BiConsumer<String, Float>() {
+        HashMap<String, Float> hashMap = deliveryFilter.filter(deliveries, matches, year);
+        hashMap = deliveryFilter.getTop(hashMap, top);
+        utilityPrintResult(hashMap);
+    }
+
+    @Override
+    public void topMostCatchesInHistoryPlayers(int top) {
+        utilityLog("top player caught count");
+        CatchFilter catchFilter = new CatchFilter();
+        HashMap<String, Integer> hashMap = catchFilter.filter(deliveries);
+        hashMap = catchFilter.getTop(hashMap, top);
+        utilityPrintResult(hashMap);
+    }
+
+    // utility functions
+    private void utilityPrintResult(HashMap<?, ?> list) {
+        list.forEach(new BiConsumer<Object, Object>() {
             @Override
-            public void accept(String s, Float aFloat) {
-                System.out.println(s + " : " + aFloat);
+            public void accept(Object o1, Object o2) {
+                System.out.println(o1 + " : " + o2);
             }
         });
     }
+    private void utilityLog(String str) {
+        System.out.println("==============================================================");
+        System.out.println(str.toUpperCase());
+        System.out.println("==============================================================");
+    }
 
 
-
-
-
-    private ArrayList<Match> csvMatchTest() {
+    private static ArrayList<Match> csvMatchTest() {
         ArrayList<Match> matches = null;
         try {
             File matchData = new File(matchFile);
@@ -101,7 +94,7 @@ public class FilterFacade implements FilterInterface {
         return matches;
     }
 
-    private ArrayList<Delivery> csvDeliveryTest() {
+    private static ArrayList<Delivery> csvDeliveryTest() {
         ArrayList<Delivery> deliveries = null;
         try {
             File deliveryData = new File(deliveryFile);

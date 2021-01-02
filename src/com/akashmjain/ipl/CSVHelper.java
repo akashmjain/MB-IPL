@@ -62,6 +62,10 @@ public class CSVHelper {
             }
         }
         // if last is comma and is empty, add extra empty string to list
+
+        if(s.length() > 0) {
+            list.add(s);
+        }
         if(line.charAt(line.length() - 1) == ',') {
             list.add("");
         }
@@ -91,6 +95,8 @@ public class CSVHelper {
         String total_runs           = list.get(17);
         String player_dismissed     = list.get(18);
         String dismissal_kind       = list.get(19);
+        String fielder              = list.size() == 21 ? list.get(20) : ""; // if last element exist assign its value
+
 
         return new Delivery(
                 match_id,
@@ -112,8 +118,8 @@ public class CSVHelper {
                 extra_runs,
                 total_runs,
                 player_dismissed,
-                dismissal_kind
-        );
+                dismissal_kind,
+                fielder);
     }
     private Match createMatchObject(String matchTuple) {
 

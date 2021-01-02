@@ -8,6 +8,7 @@ public class IPLTestDrive {
         filterFacade.numberOfMatchesPlayedPerYearForAllYear();
         filterFacade.yearWiseTopEconomicalBowler("2015", 5);
         filterFacade.yearWiseExtraRunConcededPerTeam("2016");
+        filterFacade.topMostCatchesInHistoryPlayers(5);
     }
 
 }

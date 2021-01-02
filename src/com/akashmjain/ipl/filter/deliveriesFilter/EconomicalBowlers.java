@@ -67,18 +67,17 @@ public class EconomicalBowlers extends DeliveryFilter{
         }
     }
 
-    public HashMap<String, Float> filter(ArrayList<Delivery> deliveries, ArrayList<Match> matches, String year, int top) {
+    public HashMap<String, Float> filter(ArrayList<Delivery> deliveries, ArrayList<Match> matches, String year) {
         ArrayList<Match> filteredByYear = filterByYear(matches, year);
         ArrayList<Delivery> filteredDelivery = filterDeliveryByMatchID(deliveries ,filteredByYear);
         HashMap<String, Float> hashMap = answer(filteredDelivery);
-        hashMap = getTop(hashMap, top);
 //        hashMap = getTop(hashMap, top);
         return hashMap;
     }
 
 
 
-    public static HashMap<String, Float> getTop(HashMap<String, Float> hm, int top)
+    public HashMap<String, Float> getTop(HashMap<String, Float> hm, int top)
     {
         List<Map.Entry<String, Float> > list =
                 new LinkedList<Map.Entry<String, Float> >(hm.entrySet());

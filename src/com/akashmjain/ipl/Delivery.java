@@ -21,9 +21,32 @@ public class Delivery {
     private final String total_runs;
     private final String player_dismissed;
     private final String dismissal_kind;
+    private final String fielder;
 
 
-    public Delivery(String match_id, String inning, String batting_team, String bowling_team, String over, String ball, String batsman, String non_striker, String bowler, String is_super_over, String wide_runs, String bye_runs, String legbye_runs, String noball_runs, String penalty_runs, String batsman_runs, String extra_runs, String total_runs, String player_dismissed, String dismissal_kind) {
+    public Delivery(
+        String match_id,
+        String inning,
+        String batting_team,
+        String bowling_team,
+        String over,
+        String ball,
+        String batsman,
+        String non_striker,
+        String bowler,
+        String is_super_over,
+        String wide_runs,
+        String bye_runs,
+        String legbye_runs,
+        String noball_runs,
+        String penalty_runs,
+        String batsman_runs,
+        String extra_runs,
+        String total_runs,
+        String player_dismissed,
+        String dismissal_kind,
+        String fielder
+        ) {
         this.match_id = match_id;
         this.inning = inning;
         this.batting_team = batting_team;
@@ -44,6 +67,7 @@ public class Delivery {
         this.total_runs = total_runs;
         this.player_dismissed = player_dismissed;
         this.dismissal_kind = dismissal_kind;
+        this.fielder = fielder;
     }
 
     public String getMatch_id() {
@@ -126,6 +150,9 @@ public class Delivery {
         return dismissal_kind;
     }
 
+    public String getFielder() {
+        return fielder;
+    }
 
     @Override
     public String toString() {
@@ -150,6 +177,7 @@ public class Delivery {
                 ", total_runs='" + total_runs + '\'' +
                 ", player_dismissed='" + player_dismissed + '\'' +
                 ", dismissal_kind='" + dismissal_kind + '\'' +
+                ", fielder='" + fielder + '\'' +
                 '}';
     }
 }
