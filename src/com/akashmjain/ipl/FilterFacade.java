@@ -1,8 +1,8 @@
 package com.akashmjain.ipl;
 
 import com.akashmjain.ipl.filter.deliveriesFilter.CatchFilter;
-import com.akashmjain.ipl.filter.deliveriesFilter.EconomicalBowlersFilter;
-import com.akashmjain.ipl.filter.deliveriesFilter.ExtraConcededRunFilter;
+import com.akashmjain.ipl.filter.deliveriesFilter.EconomicalBowlersDeliveryFilter;
+import com.akashmjain.ipl.filter.deliveriesFilter.ExtraConcededRunDeliveryFilter;
 import com.akashmjain.ipl.filter.matchFilter.MatchFilter;
 import com.akashmjain.ipl.filter.matchFilter.WonMatchesPerTeamFilter;
 import com.akashmjain.ipl.filter.matchFilter.YearMatchFilter;
@@ -42,7 +42,7 @@ public class FilterFacade implements FilterInterface {
 
         utilityLog("year Wise Extra Run Conceded Per Team in year " + year);
 
-        ExtraConcededRunFilter deliveryFilter = new ExtraConcededRunFilter();
+        ExtraConcededRunDeliveryFilter deliveryFilter = new ExtraConcededRunDeliveryFilter();
         HashMap<String, Integer> hashMap = deliveryFilter.filter(deliveries, matches,year);
 
         utilityPrintResult(hashMap);
@@ -51,7 +51,7 @@ public class FilterFacade implements FilterInterface {
     public void yearWiseTopEconomicalBowler(String year, int top) {
 
         utilityLog("year Wise top economical Bowler in year" + year);
-        EconomicalBowlersFilter deliveryFilter = new EconomicalBowlersFilter();
+        EconomicalBowlersDeliveryFilter deliveryFilter = new EconomicalBowlersDeliveryFilter();
         HashMap<String, Float> hashMap = deliveryFilter.filter(deliveries, matches, year);
         hashMap = deliveryFilter.getTop(hashMap, top);
         utilityPrintResult(hashMap);

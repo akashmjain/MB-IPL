@@ -6,7 +6,7 @@ import com.akashmjain.ipl.Match;
 
 import java.util.ArrayList;
 
-public class DeliveryParentFilter {
+public class ParentDeliveryFilter {
     protected ArrayList<Match> filterByYear(ArrayList<Match> matches, String year) {
         ArrayList<Match> yearlySortedMatchArray = new ArrayList<>();
         for(Match match : matches) {
