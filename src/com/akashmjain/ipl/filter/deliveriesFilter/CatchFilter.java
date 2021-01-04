@@ -14,7 +14,6 @@ public class CatchFilter {
             if(!delivery.getDismissal_kind().equals("caught")) {
                 continue;
             }
-
             fielder     = delivery.getFielder().equals("") ? "UN-KNOWN" : delivery.getFielder();
             noOfCatches = hashMap.get(fielder) == null ? 1 : hashMap.get(fielder) + 1;
 
