@@ -5,9 +5,6 @@ import com.akashmjain.ipl.Delivery;
 import java.util.*;
 
 public class CatchFilter {
-
-
-
     public HashMap<String,Integer> filter(ArrayList<Delivery> list) {
         HashMap<String, Integer> hashMap = new HashMap<>();
         Integer noOfCatches;

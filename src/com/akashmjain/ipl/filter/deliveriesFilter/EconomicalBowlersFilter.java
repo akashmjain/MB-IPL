@@ -6,7 +6,7 @@ import com.akashmjain.ipl.Match;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-public class EconomicalBowlers extends DeliveryFilter{
+public class EconomicalBowlersFilter extends DeliveryParentFilter {
     private class Boweler {
         private int run = 0;
         private int over = 0;
@@ -70,8 +70,7 @@ public class EconomicalBowlers extends DeliveryFilter{
     public HashMap<String, Float> filter(ArrayList<Delivery> deliveries, ArrayList<Match> matches, String year) {
         ArrayList<Match> filteredByYear = filterByYear(matches, year);
         ArrayList<Delivery> filteredDelivery = filterDeliveryByMatchID(deliveries ,filteredByYear);
-        HashMap<String, Float> hashMap = answer(filteredDelivery);
-//        hashMap = getTop(hashMap, top);
+        HashMap<String, Float> hashMap = calculateEconomicRate(filteredDelivery);
         return hashMap;
     }
 
@@ -81,8 +80,6 @@ public class EconomicalBowlers extends DeliveryFilter{
     {
         List<Map.Entry<String, Float> > list =
                 new LinkedList<Map.Entry<String, Float> >(hm.entrySet());
-
-
         Collections.sort(list, new Comparator<Map.Entry<String, Float> >() {
             public int compare(Map.Entry<String, Float> o1,
                                Map.Entry<String, Float> o2)
@@ -95,13 +92,10 @@ public class EconomicalBowlers extends DeliveryFilter{
             Map.Entry<String, Float> aa = list.get(i);
             temp.put(aa.getKey(), aa.getValue());
         }
-//        for (Map.Entry<String, Float> aa : list) {
-//            temp.put(aa.getKey(), aa.getValue());
-//        }
         return temp;
     }
 
-    private HashMap<String, Float> answer(ArrayList<Delivery> filteredDelivery) {
+    private HashMap<String, Float> calculateEconomicRate(ArrayList<Delivery> filteredDelivery) {
         HashMap<String, Boweler> hashMap = new HashMap<>();
         for(Delivery delivery : filteredDelivery) {
             String key = delivery.getBowler();

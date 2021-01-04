@@ -9,6 +9,7 @@ import java.util.LinkedList;
 
 public class YearMatchFilter extends MatchFilter {
     HashMap<String, LinkedList<Match>> noOfMatchesPerYear = new HashMap<>();
+
     @Override
     public HashMap<String, LinkedList<Match>> filter(ArrayList<Match> matches) {
         for(Match match : matches ) {

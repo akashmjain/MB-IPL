@@ -1,7 +1,7 @@
 package com.akashmjain.ipl;
 
 import com.akashmjain.ipl.filter.deliveriesFilter.CatchFilter;
-import com.akashmjain.ipl.filter.deliveriesFilter.EconomicalBowlers;
+import com.akashmjain.ipl.filter.deliveriesFilter.EconomicalBowlersFilter;
 import com.akashmjain.ipl.filter.deliveriesFilter.ExtraConcededRunFilter;
 import com.akashmjain.ipl.filter.matchFilter.MatchFilter;
 import com.akashmjain.ipl.filter.matchFilter.WonMatchesPerTeamFilter;
@@ -51,7 +51,7 @@ public class FilterFacade implements FilterInterface {
     public void yearWiseTopEconomicalBowler(String year, int top) {
 
         utilityLog("year Wise top economical Bowler in year" + year);
-        EconomicalBowlers deliveryFilter = new EconomicalBowlers();
+        EconomicalBowlersFilter deliveryFilter = new EconomicalBowlersFilter();
         HashMap<String, Float> hashMap = deliveryFilter.filter(deliveries, matches, year);
         hashMap = deliveryFilter.getTop(hashMap, top);
         utilityPrintResult(hashMap);
@@ -66,7 +66,8 @@ public class FilterFacade implements FilterInterface {
         utilityPrintResult(hashMap);
     }
 
-    // utility functions
+
+    /* utility methods */
     private void utilityPrintResult(HashMap<?, ?> list) {
         list.forEach(new BiConsumer<Object, Object>() {
             @Override

@@ -6,25 +6,22 @@ import com.akashmjain.ipl.Match;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ExtraConcededRunFilter extends DeliveryFilter {
+public class ExtraConcededRunFilter extends DeliveryParentFilter {
+
     public HashMap<String, Integer> filter(ArrayList<Delivery> deliveries, ArrayList<Match> matches, String year) {
-        // filter the list for year 2017
         ArrayList<Match> filteredByYear = filterByYear(matches, year);
         ArrayList<Delivery> filteredDelivery = filterDeliveryByMatchID(deliveries ,filteredByYear);
         HashMap<String, Integer> hashMap = teamViseRuns(filteredDelivery);
         return hashMap;
     }
-    private HashMap<String, Integer> teamViseRuns(ArrayList<Delivery> fd) {
+    private HashMap<String, Integer> teamViseRuns(ArrayList<Delivery> deliveries) {
         HashMap<String, Integer> answer = new HashMap<>();
-        for(Delivery d: fd) {
-            String key = d.getBatting_team();
-            Integer value = answer.get(key);
-            int run = Integer.parseInt(d.getExtra_runs());
-            if(value == null) {
-                value = run;
-            } else {
-                value += run;
-            }
+
+        for(Delivery delivery : deliveries) {
+            String key = delivery.getBatting_team();
+            int run = Integer.parseInt(delivery.getExtra_runs());
+
+            Integer value = answer.get(key) == null ? run : (answer.get(key) + run);
             answer.put(key, value);
         }
         return answer;
