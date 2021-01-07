@@ -1,46 +1,98 @@
 package com.akashmjain.ipl;
 
 public class Match {
-    private final String id;
-    private final String season;
-    private final String city;
-    private final String date;
-    private final String team1;
-    private final String team2;
-    private final String tossWinner;
-    private final String tossDecision;
-    private final String result;
-    private final String dlApplied;
-    private final String winner;
-    private final String winByRuns;
-    private final String winByWickets;
-    private final String playerOfMatch;
-    private final String venue;
-    private final String umpire1;
-    private final String umpire2;
-    private final String umpire3;
+    private String id;
+    private String season;
+    private String city;
+    private String date;
+    private String team1;
+    private String team2;
+    private String tossWinner;
+    private String tossDecision;
+    private String result;
+    private String dlApplied;
+    private String winner;
+    private String winByRuns;
+    private String winByWickets;
+    private String playerOfMatch;
+    private String venue;
+    private String umpire1;
+    private String umpire2;
+    private String umpire3;
 
-
-    public Match(String id, String season, String city, String date, String team1, String team2, String tossWinner, String tossDecision, String result, String dlApplied, String winner, String winByRuns, String winByWickets, String playerOfMatch, String venue, String umpire1, String umpire2, String umpire3) {
-        this.id                 = id;
-        this.season             = season;
-        this.city               = city;
-        this.date               = date;
-        this.team1              = team1;
-        this.team2              = team2;
-        this.tossWinner         = tossWinner;
-        this.tossDecision       = tossDecision;
-        this.result             = result;
-        this.dlApplied          = dlApplied;
-        this.winner             = winner;
-        this.winByRuns          = winByRuns;
-        this.winByWickets       = winByWickets;
-        this.playerOfMatch      = playerOfMatch;
-        this.venue              = venue;
-        this.umpire1            = umpire1;
-        this.umpire2            = umpire2;
-        this.umpire3            = umpire3;
+    public void setId(String id) {
+        this.id = id;
     }
+
+    public void setSeason(String season) {
+        this.season = season;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setTeam1(String team1) {
+        this.team1 = team1;
+    }
+
+    public void setTeam2(String team2) {
+        this.team2 = team2;
+    }
+
+    public void setTossWinner(String tossWinner) {
+        this.tossWinner = tossWinner;
+    }
+
+    public void setTossDecision(String tossDecision) {
+        this.tossDecision = tossDecision;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
+
+    public void setDlApplied(String dlApplied) {
+        this.dlApplied = dlApplied;
+    }
+
+    public void setWinner(String winner) {
+        this.winner = winner;
+    }
+
+    public void setWinByRuns(String winByRuns) {
+        this.winByRuns = winByRuns;
+    }
+
+    public void setWinByWickets(String winByWickets) {
+        this.winByWickets = winByWickets;
+    }
+
+    public void setPlayerOfMatch(String playerOfMatch) {
+        this.playerOfMatch = playerOfMatch;
+    }
+
+    public void setVenue(String venue) {
+        this.venue = venue;
+    }
+
+    public void setUmpire1(String umpire1) {
+        this.umpire1 = umpire1;
+    }
+
+    public void setUmpire2(String umpire2) {
+        this.umpire2 = umpire2;
+    }
+
+    public void setUmpire3(String umpire3) {
+        this.umpire3 = umpire3;
+    }
+
+
 
     public String getId() {
         return id;
