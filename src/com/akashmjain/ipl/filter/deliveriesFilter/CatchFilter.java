@@ -11,7 +11,7 @@ public class CatchFilter {
         String fielder;
 
         for(Delivery delivery : list) {
-            if(!delivery.getDismissal_kind().equals("caught")) {
+            if(!delivery.getDismissalKind().equals("caught")) {
                 continue;
             }
             fielder     = delivery.getFielder().equals("") ? "UN-KNOWN" : delivery.getFielder();
@@ -22,10 +22,12 @@ public class CatchFilter {
         return hashMap;
     }
 
+
+    // sorting from high no of catches to low no of catches and returning top most results.
     public HashMap<String, Integer> getTop(HashMap<String, Integer> hm, int top)
     {
-        List<Map.Entry<String, Integer> > list =
-                new LinkedList<Map.Entry<String, Integer> >(hm.entrySet());
+        List<Map.Entry<String, Integer> > list = new LinkedList<Map.Entry<String, Integer> >(hm.entrySet());
+
         Collections.sort(list, new Comparator<Map.Entry<String, Integer> >() {
             public int compare(Map.Entry<String, Integer> o1,
                                Map.Entry<String, Integer> o2)
@@ -33,11 +35,12 @@ public class CatchFilter {
                 return (o2.getValue()).compareTo(o1.getValue());
             }
         });
-        HashMap<String, Integer> temp = new LinkedHashMap<String, Integer>();
+        HashMap<String, Integer> topMost = new LinkedHashMap<String, Integer>();
+
         for (int i = 0; i < top; i++) {
             Map.Entry<String, Integer> aa = list.get(i);
-            temp.put(aa.getKey(), aa.getValue());
+            topMost.put(aa.getKey(), aa.getValue());
         }
-        return temp;
+        return topMost;
     }
 }

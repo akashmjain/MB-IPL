@@ -116,10 +116,10 @@ public class EconomicalBowlersDeliveryFilter extends ParentDeliveryFilter {
     private HashMap<String, Bowler> getBowlerMap(ArrayList<Delivery> deliveries) {
         HashMap<String, Bowler> bowlerHashMap = new HashMap<>();
         for(Delivery delivery : deliveries) {
-            int run           = Integer.parseInt(delivery.getTotal_runs());
+            int run           = Integer.parseInt(delivery.getTotalRuns());
             String key        = delivery.getBowler();
-            String lastOverID = delivery.getMatch_id()+delivery.getOver(); // concatenated ID
-            Bowler bowler = bowlerHashMap.get(key);
+            String lastOverID = delivery.getMatchId()+delivery.getOver(); // concatenated ID
+            Bowler bowler     = bowlerHashMap.get(key);
 
             if(bowler == null) {
                 String bowlerName =delivery.getBowler();

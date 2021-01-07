@@ -18,8 +18,8 @@ public class ExtraConcededRunDeliveryFilter extends ParentDeliveryFilter {
         HashMap<String, Integer> teamToRunHashMap = new HashMap<>();
 
         for(Delivery delivery : deliveries) {
-            String key = delivery.getBatting_team();
-            int run = Integer.parseInt(delivery.getExtra_runs());
+            String key = delivery.getBattingTeam();
+            int run = Integer.parseInt(delivery.getExtraRuns());
             Integer value = teamToRunHashMap.get(key) == null ? run : (teamToRunHashMap.get(key) + run);
             teamToRunHashMap.put(key, value);
         }

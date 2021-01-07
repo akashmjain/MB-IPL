@@ -20,7 +20,7 @@ public class ParentDeliveryFilter {
         ArrayList<Delivery> sortedDeliveries = new ArrayList<>();
         for(Match match : matches) {
             for(Delivery delivery : deliveries) {
-                if(match.getId().equals(delivery.getMatch_id())) {
+                if(match.getId().equals(delivery.getMatchId())) {
                     sortedDeliveries.add(delivery);
                 }
             }

@@ -18,7 +18,17 @@ public class FilterFacade implements FilterInterface {
     private final static String deliveryFile = "./data/deliveries.csv";
     private final static ArrayList<Match> matches = csvMatchTest();
     private final static ArrayList<Delivery> deliveries = csvDeliveryTest();
+    private static FilterInterface filterInterface = null;
 
+    private FilterFacade() {
+
+    }
+    public static FilterInterface getInstance() {
+        if(filterInterface == null) {
+            filterInterface = new FilterFacade();
+        }
+        return filterInterface;
+    }
     @Override
     public void numberOfMatchesPlayedPerYearForAllYear() {
         utilityLog("number Of Matches Won of all teams over all year");
@@ -49,8 +59,7 @@ public class FilterFacade implements FilterInterface {
     }
     @Override
     public void yearWiseTopEconomicalBowler(String year, int top) {
-
-        utilityLog("year Wise top economical Bowler in year" + year);
+        utilityLog("year Wise top economical Bowler in year " + year);
         EconomicalBowlersDeliveryFilter deliveryFilter = new EconomicalBowlersDeliveryFilter();
         HashMap<String, Float> hashMap = deliveryFilter.filter(deliveries, matches, year);
         hashMap = deliveryFilter.getTop(hashMap, top);

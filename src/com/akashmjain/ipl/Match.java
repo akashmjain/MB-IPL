@@ -7,35 +7,35 @@ public class Match {
     private final String date;
     private final String team1;
     private final String team2;
-    private final String toss_winner;
-    private final String toss_decision;
+    private final String tossWinner;
+    private final String tossDecision;
     private final String result;
-    private final String dl_applied;
+    private final String dlApplied;
     private final String winner;
-    private final String win_by_runs;
-    private final String win_by_wickets;
-    private final String player_of_match;
+    private final String winByRuns;
+    private final String winByWickets;
+    private final String playerOfMatch;
     private final String venue;
     private final String umpire1;
     private final String umpire2;
     private final String umpire3;
 
 
-    public Match(String id, String season, String city, String date, String team1, String team2, String toss_winner, String toss_decision, String result, String dl_applied, String winner, String win_by_runs, String win_by_wickets, String player_of_match, String venue, String umpire1, String umpire2, String umpire3) {
+    public Match(String id, String season, String city, String date, String team1, String team2, String tossWinner, String tossDecision, String result, String dlApplied, String winner, String winByRuns, String winByWickets, String playerOfMatch, String venue, String umpire1, String umpire2, String umpire3) {
         this.id                 = id;
         this.season             = season;
         this.city               = city;
         this.date               = date;
         this.team1              = team1;
         this.team2              = team2;
-        this.toss_winner        = toss_winner;
-        this.toss_decision      = toss_decision;
+        this.tossWinner         = tossWinner;
+        this.tossDecision       = tossDecision;
         this.result             = result;
-        this.dl_applied         = dl_applied;
+        this.dlApplied          = dlApplied;
         this.winner             = winner;
-        this.win_by_runs        = win_by_runs;
-        this.win_by_wickets     = win_by_wickets;
-        this.player_of_match    = player_of_match;
+        this.winByRuns          = winByRuns;
+        this.winByWickets       = winByWickets;
+        this.playerOfMatch      = playerOfMatch;
         this.venue              = venue;
         this.umpire1            = umpire1;
         this.umpire2            = umpire2;
@@ -66,36 +66,36 @@ public class Match {
         return team2;
     }
 
-    public String getToss_winner() {
-        return toss_winner;
+    public String getTossWinner() {
+        return tossWinner;
     }
 
-    public String getToss_decision() {
-        return toss_decision;
+    public String getTossDecision() {
+        return tossDecision;
     }
 
     public String getResult() {
         return result;
     }
 
-    public String getDl_applied() {
-        return dl_applied;
+    public String getDlApplied() {
+        return dlApplied;
     }
 
     public String getWinner() {
         return winner;
     }
 
-    public String getWin_by_runs() {
-        return win_by_runs;
+    public String getWinByRuns() {
+        return winByRuns;
     }
 
-    public String getWin_by_wickets() {
-        return win_by_wickets;
+    public String getWinByWickets() {
+        return winByWickets;
     }
 
-    public String getPlayer_of_match() {
-        return player_of_match;
+    public String getPlayerOfMatch() {
+        return playerOfMatch;
     }
 
     public String getVenue() {
@@ -123,14 +123,14 @@ public class Match {
                 ", date='" + date + '\'' +
                 ", team1='" + team1 + '\'' +
                 ", team2='" + team2 + '\'' +
-                ", toss_winner='" + toss_winner + '\'' +
-                ", toss_decision='" + toss_decision + '\'' +
+                ", tossWinner='" + tossWinner + '\'' +
+                ", tossDecision='" + tossDecision + '\'' +
                 ", result='" + result + '\'' +
-                ", dl_applied='" + dl_applied + '\'' +
+                ", dlApplied='" + dlApplied + '\'' +
                 ", winner='" + winner + '\'' +
-                ", win_by_runs='" + win_by_runs + '\'' +
-                ", win_by_wickets='" + win_by_wickets + '\'' +
-                ", player_of_match='" + player_of_match + '\'' +
+                ", winByRuns='" + winByRuns + '\'' +
+                ", winByWickets='" + winByWickets + '\'' +
+                ", playerOfMatch='" + playerOfMatch + '\'' +
                 ", venue='" + venue + '\'' +
                 ", umpire1='" + umpire1 + '\'' +
                 ", umpire2='" + umpire2 + '\'' +
