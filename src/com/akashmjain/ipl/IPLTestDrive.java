@@ -13,7 +13,6 @@ public class IPLTestDrive {
     private final static String deliveryFile = "./data/deliveries.csv";
 
 
-
     /* Match TUPLES */
     static final int MATCH_ID                   = 0;
     static final int MATCH_SEASON               = 1;
@@ -74,30 +73,44 @@ public class IPLTestDrive {
     /*  First problem */
     private static void numberOfMatchesWonOfAllTeamsOverAllYear(ArrayList<Match> matches) {
         utilityLog("number Of Matches Won of all teams over all year");
-        HashMap<String, LinkedList<Match>> noOfMatchesWonPerTeam = new HashMap<>();
+        HashMap<String, LinkedList<Match>> matchesWonPerTeam = new HashMap<>();
         for(Match match : matches) {
-            LinkedList<Match> linkedList = pushElementIntoLinkedList(match, match.getWinner(), noOfMatchesWonPerTeam);
+            LinkedList<Match> linkedList = pushElementIntoLinkedList(match, match.getWinner(), matchesWonPerTeam);
             String winner = match.getWinner().equals("") ? "NO WINNER" : match.getWinner();
-            noOfMatchesWonPerTeam.put(winner, linkedList);
+            matchesWonPerTeam.put(winner, linkedList);
         }
+        HashMap<String, Integer> noOfMatchesWonPerTeam = new HashMap<>();
+        matchesWonPerTeam.forEach(new BiConsumer<String, LinkedList<Match>>() {
+            @Override
+            public void accept(String s, LinkedList<Match> matches) {
+                noOfMatchesWonPerTeam.put(s, matches.size());
+            }
+        });
         utilityPrintResult(noOfMatchesWonPerTeam);
     }
 
     /* Second problem */
-    public static void numberOfMatchesPlayedPerYearForAllYear(ArrayList<Match> matches) {
+    private static void numberOfMatchesPlayedPerYearForAllYear(ArrayList<Match> matches) {
         utilityLog("number Of Matches played per year for all years");
-        HashMap<String, LinkedList<Match>> noOfMatchesPerYear = new HashMap<>();
+        HashMap<String, LinkedList<Match>> matchesPerYear = new HashMap<>();
         for(Match match : matches ) {
             String key = match.getSeason();
-            LinkedList<Match> linkedList = pushElementIntoLinkedList(match, key, noOfMatchesPerYear);
-            noOfMatchesPerYear.put(key, linkedList);
+            LinkedList<Match> linkedList = pushElementIntoLinkedList(match, key, matchesPerYear);
+            matchesPerYear.put(key, linkedList);
         }
+        HashMap<String, Integer> noOfMatchesPerYear = new HashMap<>();
+        matchesPerYear.forEach(new BiConsumer<String, LinkedList<Match>>() {
+            @Override
+            public void accept(String s, LinkedList<Match> matches) {
+                noOfMatchesPerYear.put(s, matches.size());
+            }
+        });
         utilityPrintResult(noOfMatchesPerYear);
     }
 
 
     /* Third Problem */
-    public static void yearWiseExtraRunConcededPerTeam(ArrayList<Delivery> deliveries, ArrayList<Match> matches,String year) {
+    private static void yearWiseExtraRunConcededPerTeam(ArrayList<Delivery> deliveries, ArrayList<Match> matches,String year) {
         utilityLog("year Wise Extra Run Conceded Per Team in year " + year);
         HashMap<String, Integer> hashMap = deliveryWithMatchId(deliveries, matches,year);
         utilityPrintResult(hashMap);
@@ -120,20 +133,20 @@ public class IPLTestDrive {
 
 
     /* Fourth Problem */
-    public static void yearWiseTopEconomicalBowler(ArrayList<Delivery> deliveries, ArrayList<Match> matches,String year, int top) {
+    private static void yearWiseTopEconomicalBowler(ArrayList<Delivery> deliveries, ArrayList<Match> matches,String year, int top) {
 
         utilityLog("year Wise top economical Bowler in year " + year);
         HashMap<String, Float> hashMap = economicalBowlersDeliveryFilter(deliveries, matches, year);
         hashMap = getTopBestEconomicBowler(hashMap, top);
         utilityPrintResult(hashMap);
     }
-    public static HashMap<String, Float> economicalBowlersDeliveryFilter(ArrayList<Delivery> deliveries, ArrayList<Match> matches, String year) {
+    private static HashMap<String, Float> economicalBowlersDeliveryFilter(ArrayList<Delivery> deliveries, ArrayList<Match> matches, String year) {
         ArrayList<Match> filteredByYear = filterByYear(matches, year);
         ArrayList<Delivery> filteredDelivery = filterDeliveryByMatchID(deliveries ,filteredByYear);
         HashMap<String, Float> hashMap = calculateEconomicRate(filteredDelivery);
         return hashMap;
     }
-    public static HashMap<String, Float> getTopBestEconomicBowler(HashMap<String, Float> hm, int top) {
+    private static HashMap<String, Float> getTopBestEconomicBowler(HashMap<String, Float> hm, int top) {
         List<Map.Entry<String, Float> > list = new LinkedList<Map.Entry<String, Float> >(hm.entrySet());
 
         Collections.sort(list, new Comparator<Map.Entry<String, Float> >() {
@@ -281,7 +294,10 @@ public class IPLTestDrive {
     }
 
 
-    /********************************* CSV FILES PARSING ****************************/
+    /********************************* CSV FILES PARSING ****************************
+     * This Section of program is to convert csv to native data set. so that it can be
+     * easily manipulated for all the problems given.
+    *********************************************************************************/
     /*
     * Match csv parsing starts here
     * */
@@ -345,6 +361,7 @@ public class IPLTestDrive {
         match.setUmpire1(umpire1);
         match.setUmpire2(umpire2);
         match.setUmpire3(umpire3);
+
         return match;
     }
 
