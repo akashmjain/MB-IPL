@@ -51,8 +51,8 @@ public class IPLTestDrive {
     private static final int DELIVERY_FIELDER = 20;
 
     public static void main(String[] args) {
-        ArrayList<Match>    matches    = parseMatchCSV();
-        ArrayList<Delivery> deliveries = parseDeliveryCSV();
+        ArrayList<Match> matches = getMatchesData();
+        ArrayList<Delivery> deliveries = getDeliveryData();
         findNumberOfMatchesWonPerTeamsOverAllYears(matches);
         findNumberOfMatchesPlayedPerYearForAllYears(matches);
         findYearWiseExtraRunConcededPerTeam(deliveries, matches, "2016");
@@ -61,7 +61,6 @@ public class IPLTestDrive {
     }
 
     private static void findNumberOfMatchesWonPerTeamsOverAllYears(ArrayList<Match> matches) {
-
         HashMap<String, LinkedList<Match>> matchesWonPerTeam = new HashMap<>();
         HashMap<String, Integer> noOfMatchesWonPerTeam = new HashMap<>();
         for(Match match : matches) {
@@ -138,10 +137,10 @@ public class IPLTestDrive {
         }
         HashMap<String, Bowler> bowlerHashMap = new HashMap<>();
         for(Delivery delivery : yearWiseDeliveries) {
-            int run           = Integer.parseInt(delivery.getTotalRuns());
-            String key        = delivery.getBowler();
+            int run = Integer.parseInt(delivery.getTotalRuns());
+            String key = delivery.getBowler();
             String lastOverID = delivery.getMatchId()+delivery.getOver();
-            Bowler bowler     = bowlerHashMap.get(key);
+            Bowler bowler = bowlerHashMap.get(key);
             if(bowler == null) {
                 String bowlerName = delivery.getBowler();
                 bowler = new Bowler();
@@ -176,7 +175,6 @@ public class IPLTestDrive {
                 return (o1.getValue()).compareTo(o2.getValue());
             }
         });
-
         HashMap<String, Float> sortedHashMap = new LinkedHashMap<String, Float>();
         for (int i = 0; i < top; i++) {
             Map.Entry<String, Float> aa = list.get(i);
@@ -198,14 +196,31 @@ public class IPLTestDrive {
             if(!delivery.getDismissalKind().equals("caught")) {
                 continue;
             }
-            fielder = delivery.getFielder().equals("") ? "UN-KNOWN" : delivery.getFielder();
+            fielder     = delivery.getFielder().equals("") ? "UN-KNOWN" : delivery.getFielder();
             noOfCatches = hashMap.get(fielder) == null ? 1 : hashMap.get(fielder) + 1;
             hashMap.put(fielder, noOfCatches);
         }
-
+        List<Map.Entry<String, Integer>> list = new LinkedList<Map.Entry<String, Integer> >(hashMap.entrySet());
+        Collections.sort(list, new Comparator<Map.Entry<String, Integer> >() {
+            public int compare(Map.Entry<String, Integer> o1,Map.Entry<String, Integer> o2)
+            {
+                return (o2.getValue()).compareTo(o1.getValue());
+            }
+        });
+        HashMap<String, Integer> topMost = new LinkedHashMap<String, Integer>();
+        for (int i = 0; i < top; i++) {
+            Map.Entry<String, Integer> aa = list.get(i);
+            topMost.put(aa.getKey(), aa.getValue());
+        }
+        topMost.forEach(new BiConsumer<String, Integer>() {
+            @Override
+            public void accept(String s, Integer integer) {
+                System.out.println(s + " : " + integer);
+            }
+        });
     }
 
-    private static ArrayList<Delivery> parseDeliveryCSV() {
+    private static ArrayList<Delivery> getDeliveryData() {
         ArrayList<Delivery> deliveries = new ArrayList<>();
         try {
             File file = new File(deliveryFile);
@@ -224,8 +239,9 @@ public class IPLTestDrive {
                 delivery.setOver(list.get(DELIVERY_OVER));
                 delivery.setTotalRuns(list.get(DELIVERY_TOTAL_RUNS));
                 delivery.setIsSuperOver(list.get(DELIVERY_IS_SUPER_OVER));
-                delivery.setDismissalKind(list.size() == DELIVERY_DISMISSAL_KIND + 1 ? list.get(DELIVERY_DISMISSAL_KIND) : "");
-                delivery.setFielder(list.size() == DELIVERY_FIELDER + 1 ?list.get(DELIVERY_FIELDER) : "");
+                delivery.setDismissalKind(list.size() >= DELIVERY_DISMISSAL_KIND ? list.get(DELIVERY_DISMISSAL_KIND) : "");
+                delivery.setFielder(list.size() >= DELIVERY_FIELDER + 1 ?list.get(DELIVERY_FIELDER) : "");
+
                 deliveries.add(delivery);
             }
         } catch (Exception e) {
@@ -233,7 +249,8 @@ public class IPLTestDrive {
         }
         return deliveries;
     }
-    private static ArrayList<Match> parseMatchCSV() {
+
+    private static ArrayList<Match> getMatchesData() {
         ArrayList<Match> matches = new ArrayList<>();
         try {
             File file = new File(matchFile);
