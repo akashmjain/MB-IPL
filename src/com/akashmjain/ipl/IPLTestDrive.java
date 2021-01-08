@@ -78,68 +78,49 @@ public class IPLTestDrive {
     }
 
     private static void findYearWiseExtraRunConcededPerTeam(List<Delivery> deliveries, List<Match> matches, String year) {
-        List<Match> yearWiseMatches = new ArrayList<>();
-        for(Match match : matches) {
-            if(match.getSeason().equals(year)) {
-                yearWiseMatches.add(match);
-            }
-        }
-        List<Delivery> yearWiseDelivery = new ArrayList<>();
-        for(Match match : yearWiseMatches) {
-            for(Delivery delivery : deliveries) {
-                if(match.getId().equals(delivery.getMatchId())) {
-                    yearWiseDelivery.add(delivery);
-                }
-            }
-        }
         Map<String, Integer> teamToRunHashMap = new HashMap<>();
-        for(Delivery delivery : yearWiseDelivery) {
-            int run = Integer.parseInt(delivery.getExtraRuns());
-            String key = delivery.getBattingTeam();
-            Integer value = teamToRunHashMap.get(key) == null ? run : (teamToRunHashMap.get(key) + run);
-            teamToRunHashMap.put(key, value);
+        for(Match match : matches) {
+            if(!match.getSeason().equals(year)) continue;
+            for(Delivery delivery : deliveries) {
+                if(!match.getId().equals(delivery.getMatchId())) continue;
+                int run = Integer.parseInt(delivery.getExtraRuns());
+                String key = delivery.getBattingTeam();
+                Integer value = teamToRunHashMap.get(key) == null ? run : (teamToRunHashMap.get(key) + run);
+                teamToRunHashMap.put(key, value);
+            }
         }
         teamToRunHashMap.forEach((s, integer) -> System.out.println(s + " : " + integer));
     }
 
     private static void findYearWiseTopEconomicalBowlers(List<Delivery> deliveries, List<Match> matches, String year, int top) {
-        List<Match> matchesFilteredByYear = new ArrayList<>();
-        for(Match match : matches) {
-            if(match.getSeason().equals(year)) {
-                matchesFilteredByYear.add(match);
-            }
-        }
-        List<Delivery> yearWiseDeliveries = new ArrayList<>();
-        for(Match match : matchesFilteredByYear) {
-            for(Delivery delivery : deliveries) {
-                if(match.getId().equals(delivery.getMatchId())) {
-                    yearWiseDeliveries.add(delivery);
-                }
-            }
-        }
         Map<String, Bowler> bowlerHashMap = new HashMap<>();
-        for(Delivery delivery : yearWiseDeliveries) {
-            int run = Integer.parseInt(delivery.getTotalRuns());
-            String key = delivery.getBowler();
-            String lastOverID = delivery.getMatchId()+delivery.getOver();
-            Bowler bowler = bowlerHashMap.get(key);
-            if(bowler == null) {
-                String bowlerName = delivery.getBowler();
-                bowler = new Bowler();
-                bowler.setName(bowlerName);
-                bowler.setRun(run);
-                bowler.incrementOver();
-                bowler.setLastOver(lastOverID);
-            }
-            else {
-                if (!bowler.getLastOver().equals(lastOverID)) {
+        for(Match match : matches) {
+            if(!match.getSeason().equals(year)) continue;
+            for(Delivery delivery : deliveries) {
+                if(!match.getId().equals(delivery.getMatchId())) continue;
+                int run = Integer.parseInt(delivery.getTotalRuns());
+                String key = delivery.getBowler();
+                String lastOverID = delivery.getMatchId()+delivery.getOver();
+                Bowler bowler = bowlerHashMap.get(key);
+
+                if(bowler == null) {
+                    String bowlerName = delivery.getBowler();
+                    bowler = new Bowler();
+                    bowler.setName(bowlerName);
+                    bowler.setRun(run);
                     bowler.incrementOver();
                     bowler.setLastOver(lastOverID);
                 }
-                bowler.setRun(run + bowler.getRun());
+                else {
+                    if (!bowler.getLastOver().equals(lastOverID)) {
+                        bowler.incrementOver();
+                        bowler.setLastOver(lastOverID);
+                    }
+                    bowler.setRun(run + bowler.getRun());
+                }
+                bowler.incrementTotalBall();
+                bowlerHashMap.put(key, bowler);
             }
-            bowler.incrementTotalBall();
-            bowlerHashMap.put(key, bowler);
         }
         Map<String, Float> playerEconomyMap = new HashMap<>();
         bowlerHashMap.forEach((playerName, bowler) -> {
