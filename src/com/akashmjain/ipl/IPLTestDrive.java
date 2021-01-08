@@ -1,6 +1,5 @@
 package com.akashmjain.ipl;
 
-
 import java.io.File;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -51,8 +50,8 @@ public class IPLTestDrive {
     private static final int DELIVERY_FIELDER = 20;
 
     public static void main(String[] args) {
-        ArrayList<Match> matches = getMatchesData();
-        ArrayList<Delivery> deliveries = getDeliveryData();
+        List<Match> matches = getMatchesData();
+        List<Delivery> deliveries = getDeliveryData();
         findNumberOfMatchesWonPerTeamsOverAllYears(matches);
         findNumberOfMatchesPlayedPerYearForAllYears(matches);
         findYearWiseExtraRunConcededPerTeam(deliveries, matches, "2016");
@@ -60,44 +59,32 @@ public class IPLTestDrive {
         findTopMostCatchesInHistoryPlayers(deliveries, 5);
     }
 
-    private static void findNumberOfMatchesWonPerTeamsOverAllYears(ArrayList<Match> matches) {
-        HashMap<String, LinkedList<Match>> matchesWonPerTeam = new HashMap<>();
-        HashMap<String, Integer> noOfMatchesWonPerTeam = new HashMap<>();
+    private static void findNumberOfMatchesWonPerTeamsOverAllYears(List<Match> matches) {
+        Map<String, Integer> noOfMatchesWonPerTeam = new HashMap<>();
         for(Match match : matches) {
             noOfMatchesWonPerTeam.putIfAbsent(match.getWinner(), 0);
             noOfMatchesWonPerTeam.put(match.getWinner(), noOfMatchesWonPerTeam.get(match.getWinner()) + 1);
         }
-        noOfMatchesWonPerTeam.forEach(new BiConsumer<String, Integer>() {
-            @Override
-            public void accept(String s, Integer integer) {
-                System.out.println(s + " : " + integer);
-            }
-        });
+        noOfMatchesWonPerTeam.forEach((s, integer) -> System.out.println(s + " : " + integer));
     }
 
-    private static void findNumberOfMatchesPlayedPerYearForAllYears(ArrayList<Match> matches) {
-        HashMap<String, LinkedList<Match>> matchesPerYear = new HashMap<>();
-        HashMap<String, Integer> noOfMatchesPerYear = new HashMap<>();
+    private static void findNumberOfMatchesPlayedPerYearForAllYears(List<Match> matches) {
+        Map<String, Integer> noOfMatchesPerYear = new HashMap<>();
         for(Match match : matches ) {
             noOfMatchesPerYear.putIfAbsent(match.getSeason(), 0);
             noOfMatchesPerYear.put(match.getSeason(), noOfMatchesPerYear.get(match.getSeason()) + 1);
         }
-        noOfMatchesPerYear.forEach(new BiConsumer<String, Integer>() {
-            @Override
-            public void accept(String s, Integer integer) {
-                System.out.println(s + " : " + integer);
-            }
-        });
+        noOfMatchesPerYear.forEach((s, integer) -> System.out.println(s + " : " + integer));
     }
 
-    private static void findYearWiseExtraRunConcededPerTeam(ArrayList<Delivery> deliveries, ArrayList<Match> matches, String year) {
-        ArrayList<Match> yearWiseMatches = new ArrayList<>();
+    private static void findYearWiseExtraRunConcededPerTeam(List<Delivery> deliveries, List<Match> matches, String year) {
+        List<Match> yearWiseMatches = new ArrayList<>();
         for(Match match : matches) {
             if(match.getSeason().equals(year)) {
                 yearWiseMatches.add(match);
             }
         }
-        ArrayList<Delivery> yearWiseDelivery = new ArrayList<>();
+        List<Delivery> yearWiseDelivery = new ArrayList<>();
         for(Match match : yearWiseMatches) {
             for(Delivery delivery : deliveries) {
                 if(match.getId().equals(delivery.getMatchId())) {
@@ -105,29 +92,24 @@ public class IPLTestDrive {
                 }
             }
         }
-        HashMap<String, Integer> teamToRunHashMap = new HashMap<>();
+        Map<String, Integer> teamToRunHashMap = new HashMap<>();
         for(Delivery delivery : yearWiseDelivery) {
-            String key = delivery.getBattingTeam();
             int run = Integer.parseInt(delivery.getExtraRuns());
+            String key = delivery.getBattingTeam();
             Integer value = teamToRunHashMap.get(key) == null ? run : (teamToRunHashMap.get(key) + run);
             teamToRunHashMap.put(key, value);
         }
-        teamToRunHashMap.forEach(new BiConsumer<String, Integer>() {
-            @Override
-            public void accept(String s, Integer integer) {
-                System.out.println(s + " : " + integer);
-            }
-        });
+        teamToRunHashMap.forEach((s, integer) -> System.out.println(s + " : " + integer));
     }
 
-    private static void findYearWiseTopEconomicalBowlers(ArrayList<Delivery> deliveries, ArrayList<Match> matches, String year, int top) {
-        ArrayList<Match> matchesFilteredByYear = new ArrayList<>();
+    private static void findYearWiseTopEconomicalBowlers(List<Delivery> deliveries, List<Match> matches, String year, int top) {
+        List<Match> matchesFilteredByYear = new ArrayList<>();
         for(Match match : matches) {
             if(match.getSeason().equals(year)) {
                 matchesFilteredByYear.add(match);
             }
         }
-        ArrayList<Delivery> yearWiseDeliveries = new ArrayList<>();
+        List<Delivery> yearWiseDeliveries = new ArrayList<>();
         for(Match match : matchesFilteredByYear) {
             for(Delivery delivery : deliveries) {
                 if(match.getId().equals(delivery.getMatchId())) {
@@ -135,7 +117,7 @@ public class IPLTestDrive {
                 }
             }
         }
-        HashMap<String, Bowler> bowlerHashMap = new HashMap<>();
+        Map<String, Bowler> bowlerHashMap = new HashMap<>();
         for(Delivery delivery : yearWiseDeliveries) {
             int run = Integer.parseInt(delivery.getTotalRuns());
             String key = delivery.getBowler();
@@ -159,72 +141,45 @@ public class IPLTestDrive {
             bowler.incrementTotalBall();
             bowlerHashMap.put(key, bowler);
         }
-        HashMap<String, Float> playerEconomyMap = new HashMap<>();
-        bowlerHashMap.forEach(new BiConsumer<String, Bowler>() {
-            @Override
-            public void accept(String playerName, Bowler bowler) {
-                float economyRate = ((float) bowler.getRun()) / ((float) bowler.getOver());
-                playerEconomyMap.put(playerName, economyRate);
-            }
+        Map<String, Float> playerEconomyMap = new HashMap<>();
+        bowlerHashMap.forEach((playerName, bowler) -> {
+            float economyRate = ((float) bowler.getRun()) / ((float) bowler.getOver());
+            playerEconomyMap.put(playerName, economyRate);
         });
-        List<Map.Entry<String, Float> > list = new LinkedList<Map.Entry<String, Float> >(playerEconomyMap.entrySet());
-        Collections.sort(list, new Comparator<Map.Entry<String, Float> >() {
-            public int compare(Map.Entry<String, Float> o1,
-                               Map.Entry<String, Float> o2)
-            {
-                return (o1.getValue()).compareTo(o2.getValue());
-            }
-        });
-        HashMap<String, Float> sortedHashMap = new LinkedHashMap<String, Float>();
+        List<Map.Entry<String, Float> > list = new LinkedList<>(playerEconomyMap.entrySet());
+        list.sort(Map.Entry.comparingByValue());
+        Map<String, Float> sortedLinkedHashMap = new LinkedHashMap<>();
         for (int i = 0; i < top; i++) {
             Map.Entry<String, Float> aa = list.get(i);
-            sortedHashMap.put(aa.getKey(), aa.getValue());
+            sortedLinkedHashMap.put(aa.getKey(), aa.getValue());
         }
-        sortedHashMap.forEach(new BiConsumer<String, Float>() {
-            @Override
-            public void accept(String s, Float aFloat) {
-                System.out.println(s + " : " + aFloat);
-            }
-        });
+        sortedLinkedHashMap.forEach((s, aFloat) -> System.out.println(s + " : " + aFloat));
     }
 
-    private static void findTopMostCatchesInHistoryPlayers(ArrayList<Delivery> deliveries, int top){
-        HashMap<String, Integer> hashMap = new HashMap<>();
-        Integer noOfCatches;
-        String fielder;
+    private static void findTopMostCatchesInHistoryPlayers(List<Delivery> deliveries, int top){
+        Map<String, Integer> hashMap = new HashMap<>();
         for(Delivery delivery : deliveries) {
-            if(!delivery.getDismissalKind().equals("caught")) {
-                continue;
+            if (delivery.getDismissalKind().equals("caught")) {
+                String fielder = delivery.getFielder().equals("") ? "UN-KNOWN" : delivery.getFielder();
+                int noOfCatches = hashMap.get(fielder) == null ? 1 : hashMap.get(fielder) + 1;
+                hashMap.put(fielder, noOfCatches);
             }
-            fielder     = delivery.getFielder().equals("") ? "UN-KNOWN" : delivery.getFielder();
-            noOfCatches = hashMap.get(fielder) == null ? 1 : hashMap.get(fielder) + 1;
-            hashMap.put(fielder, noOfCatches);
         }
-        List<Map.Entry<String, Integer>> list = new LinkedList<Map.Entry<String, Integer> >(hashMap.entrySet());
-        Collections.sort(list, new Comparator<Map.Entry<String, Integer> >() {
-            public int compare(Map.Entry<String, Integer> o1,Map.Entry<String, Integer> o2)
-            {
-                return (o2.getValue()).compareTo(o1.getValue());
-            }
-        });
-        HashMap<String, Integer> topMost = new LinkedHashMap<String, Integer>();
+        List<Map.Entry<String, Integer>> list = new LinkedList<>(hashMap.entrySet());
+        list.sort((o1, o2) -> (o2.getValue()).compareTo(o1.getValue()));
+        HashMap<String, Integer> topMost = new LinkedHashMap<>();
         for (int i = 0; i < top; i++) {
             Map.Entry<String, Integer> aa = list.get(i);
             topMost.put(aa.getKey(), aa.getValue());
         }
-        topMost.forEach(new BiConsumer<String, Integer>() {
-            @Override
-            public void accept(String s, Integer integer) {
-                System.out.println(s + " : " + integer);
-            }
-        });
+        topMost.forEach((s, integer) -> System.out.println(s + " : " + integer));
     }
 
-    private static ArrayList<Delivery> getDeliveryData() {
-        ArrayList<Delivery> deliveries = new ArrayList<>();
+    private static List<Delivery> getDeliveryData() {
+        List<Delivery> deliveries = new ArrayList<>();
         try {
             File file = new File(deliveryFile);
-            ArrayList<String> lines = new ArrayList<>();
+            List<String> lines = new ArrayList<>();
             Scanner sc = new Scanner(file);
             while(sc.hasNext()) {
                 lines.add(sc.nextLine());
@@ -241,7 +196,6 @@ public class IPLTestDrive {
                 delivery.setIsSuperOver(list.get(DELIVERY_IS_SUPER_OVER));
                 delivery.setDismissalKind(list.size() >= DELIVERY_DISMISSAL_KIND ? list.get(DELIVERY_DISMISSAL_KIND) : "");
                 delivery.setFielder(list.size() >= DELIVERY_FIELDER + 1 ?list.get(DELIVERY_FIELDER) : "");
-
                 deliveries.add(delivery);
             }
         } catch (Exception e) {
@@ -250,11 +204,11 @@ public class IPLTestDrive {
         return deliveries;
     }
 
-    private static ArrayList<Match> getMatchesData() {
-        ArrayList<Match> matches = new ArrayList<>();
+    private static List<Match> getMatchesData() {
+        List<Match> matches = new ArrayList<>();
         try {
             File file = new File(matchFile);
-            ArrayList<String> lines = new ArrayList<>();
+            List<String> lines = new ArrayList<>();
             Scanner sc = new Scanner(file);
             while(sc.hasNext()) {
                 lines.add(sc.nextLine());
