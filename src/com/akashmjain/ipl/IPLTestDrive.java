@@ -7,13 +7,9 @@ import java.util.*;
 import java.util.function.BiConsumer;
 
 public class IPLTestDrive {
-
-    /* CSV Extraction */
     private final static String matchFile    = "./data/matches.csv";
     private final static String deliveryFile = "./data/deliveries.csv";
 
-
-    /* Match TUPLES */
     static final int MATCH_ID                   = 0;
     static final int MATCH_SEASON               = 1;
     static final int MATCH_CITY                 = 2;
@@ -33,8 +29,6 @@ public class IPLTestDrive {
     static final int MATCH_UMPIRE2              = 16;
     static final int MATCH_UMPIRE3              = 17;
 
-
-    /* Delivery tuples */
     static final int DELIVERY_MATCH_ID          = 0;
     static final int DELIVERY_INNING            = 1;
     static final int DELIVERY_BATTING_TEAM      = 2;
@@ -57,143 +51,95 @@ public class IPLTestDrive {
     static final int DELIVERY_DISMISSAL_KIND    = 19;
     static final int DELIVERY_FIELDER           = 20;
 
-
     public static void main(String[] args) {
         ArrayList<Match>    matches    = parseMatchCSV();
         ArrayList<Delivery> deliveries = parseDeliveryCSV();
 
-        numberOfMatchesWonOfAllTeamsOverAllYear(matches);
-        numberOfMatchesPlayedPerYearForAllYear(matches);
-        yearWiseExtraRunConcededPerTeam(deliveries, matches, "2016");
-        yearWiseTopEconomicalBowler(deliveries, matches,"2015", 5);
-        topMostCatchesInHistoryPlayers(deliveries, 5);
+//        findNumberOfMatchesWonPerTeamsOverAllYears(matches);
+//        findNumberOfMatchesPlayedPerYearForAllYears(matches);
+//        findYearWiseExtraRunConcededPerTeam(deliveries, matches, "2016");
+//        findYearWiseTopEconomicalBowlers(deliveries, matches,"2015", 5);
+        findTopMostCatchesInHistoryPlayers(deliveries, 5);
     }
 
-    /*************************** WRITE CODE FOR SOLVING PROBLEMS *********************/
-    /**
-     * 1. Number of matches played per year of all the years in IPL.
-     * */
-    private static void numberOfMatchesWonOfAllTeamsOverAllYear(ArrayList<Match> matches) {
-        utilityLog("number Of Matches Won of all teams over all year");
+    private static void findNumberOfMatchesWonPerTeamsOverAllYears(ArrayList<Match> matches) {
         HashMap<String, LinkedList<Match>> matchesWonPerTeam = new HashMap<>();
-        for(Match match : matches) {
-            LinkedList<Match> linkedList = pushElementIntoLinkedList(match, match.getWinner(), matchesWonPerTeam);
-            String winner = match.getWinner().equals("") ? "NO WINNER" : match.getWinner();
-            matchesWonPerTeam.put(winner, linkedList);
-        }
         HashMap<String, Integer> noOfMatchesWonPerTeam = new HashMap<>();
-        matchesWonPerTeam.forEach(new BiConsumer<String, LinkedList<Match>>() {
-            @Override
-            public void accept(String s, LinkedList<Match> matches) {
-                noOfMatchesWonPerTeam.put(s, matches.size());
-            }
-        });
-        utilityPrintResult(noOfMatchesWonPerTeam);
-    }
-
-    /**
-     * 2. Number of matches won of all teams over all the years of IPL.
-     * */
-    private static void numberOfMatchesPlayedPerYearForAllYear(ArrayList<Match> matches) {
-        utilityLog("number Of Matches played per year for all years");
-        HashMap<String, LinkedList<Match>> matchesPerYear = new HashMap<>();
-        for(Match match : matches ) {
-            String key = match.getSeason();
-            LinkedList<Match> linkedList = pushElementIntoLinkedList(match, key, matchesPerYear);
-            matchesPerYear.put(key, linkedList);
+        for(Match match : matches) {
+            noOfMatchesWonPerTeam.putIfAbsent(match.getWinner(), 0);
+            noOfMatchesWonPerTeam.put(match.getWinner(), noOfMatchesWonPerTeam.get(match.getWinner()) + 1);
         }
-        HashMap<String, Integer> noOfMatchesPerYear = new HashMap<>();
-        matchesPerYear.forEach(new BiConsumer<String, LinkedList<Match>>() {
+        noOfMatchesWonPerTeam.forEach(new BiConsumer<String, Integer>() {
             @Override
-            public void accept(String s, LinkedList<Match> matches) {
-                noOfMatchesPerYear.put(s, matches.size());
+            public void accept(String s, Integer integer) {
+                System.out.println(s + " : " + integer);
             }
         });
-        utilityPrintResult(noOfMatchesPerYear);
     }
 
+    private static void findNumberOfMatchesPlayedPerYearForAllYears(ArrayList<Match> matches) {
+        HashMap<String, LinkedList<Match>> matchesPerYear = new HashMap<>();
+        HashMap<String, Integer> noOfMatchesPerYear = new HashMap<>();
+        for(Match match : matches ) {
+            noOfMatchesPerYear.putIfAbsent(match.getSeason(), 0);
+            noOfMatchesPerYear.put(match.getSeason(), noOfMatchesPerYear.get(match.getSeason()) + 1);
+        }
+        noOfMatchesPerYear.forEach(new BiConsumer<String, Integer>() {
+            @Override
+            public void accept(String s, Integer integer) {
+                System.out.println(s + " : " + integer);
+            }
+        });
+    }
 
-    /**
-     * 3. For the year 2016 get the extra runs conceded per team.
-     * */
-    private static void yearWiseExtraRunConcededPerTeam(ArrayList<Delivery> deliveries, ArrayList<Match> matches,String year) {
-        utilityLog("year Wise Extra Run Conceded Per Team in year " + year);
-        HashMap<String, Integer> hashMap = deliveryWithMatchId(deliveries, matches,year);
-        utilityPrintResult(hashMap);
-    }
-    private static HashMap<String, Integer> deliveryWithMatchId(ArrayList<Delivery> deliveries, ArrayList<Match> matches, String year) {
-        ArrayList<Match> yearWiseMatches = filterByYear(matches, year);
-        ArrayList<Delivery> yearWiseDelivery = filterDeliveryByMatchID(deliveries ,yearWiseMatches);
-        return teamViseRuns(yearWiseDelivery);
-    }
-    private static HashMap<String, Integer> teamViseRuns(ArrayList<Delivery> deliveries) {
+    private static void findYearWiseExtraRunConcededPerTeam(ArrayList<Delivery> deliveries, ArrayList<Match> matches, String year) {
+        ArrayList<Match> yearWiseMatches = new ArrayList<>();
+        for(Match match : matches) {
+            if(match.getSeason().equals(year)) {
+                yearWiseMatches.add(match);
+            }
+        }
+        ArrayList<Delivery> yearWiseDelivery = new ArrayList<>();
+        for(Match match : yearWiseMatches) {
+            for(Delivery delivery : deliveries) {
+                if(match.getId().equals(delivery.getMatchId())) {
+                    yearWiseDelivery.add(delivery);
+                }
+            }
+        }
         HashMap<String, Integer> teamToRunHashMap = new HashMap<>();
-        for(Delivery delivery : deliveries) {
+        for(Delivery delivery : yearWiseDelivery) {
             String key = delivery.getBattingTeam();
             int run = Integer.parseInt(delivery.getExtraRuns());
             Integer value = teamToRunHashMap.get(key) == null ? run : (teamToRunHashMap.get(key) + run);
             teamToRunHashMap.put(key, value);
         }
-        return teamToRunHashMap;
-    }
-
-
-    /**
-     * 4. For the year 2015 get the top economical bowlers.
-     * */
-    private static void yearWiseTopEconomicalBowler(ArrayList<Delivery> deliveries, ArrayList<Match> matches,String year, int top) {
-
-        utilityLog("year Wise top economical Bowler in year " + year);
-        ArrayList<Match> filteredByYear = filterByYear(matches, year);
-        ArrayList<Delivery> filteredDelivery = filterDeliveryByMatchID(deliveries ,filteredByYear);
-        HashMap<String, Float> hashMap = calculateEconomicRate(filteredDelivery);
-        hashMap = getTopBestEconomicBowler(hashMap, top);
-        utilityPrintResult(hashMap);
-    }
-    /* Get top economical bowlers based on there economy rate */
-    private static HashMap<String, Float> getTopBestEconomicBowler(HashMap<String, Float> hm, int top) {
-        List<Map.Entry<String, Float> > list = new LinkedList<Map.Entry<String, Float> >(hm.entrySet());
-
-        Collections.sort(list, new Comparator<Map.Entry<String, Float> >() {
-            public int compare(Map.Entry<String, Float> o1,
-                               Map.Entry<String, Float> o2)
-            {
-                return (o1.getValue()).compareTo(o2.getValue());
-            }
-        });
-
-        HashMap<String, Float> sortedHashMap = new LinkedHashMap<String, Float>();
-        for (int i = 0; i < top; i++) {
-            Map.Entry<String, Float> aa = list.get(i);
-            sortedHashMap.put(aa.getKey(), aa.getValue());
-        }
-        return sortedHashMap;
-    }
-    /* Calculate economy rate for each bowler */
-    private static HashMap<String, Float> calculateEconomicRate(ArrayList<Delivery> filteredDelivery) {
-        HashMap<String, Bowler> bowlerHashMap = getBowlerMap(filteredDelivery);
-        return getBowlerEconomyMap(bowlerHashMap);
-    }
-    /* Get Bowler name to Bowler Object HashMap for easy operation*/
-    private static HashMap<String, Float> getBowlerEconomyMap(HashMap<String, Bowler> bowlerHashMap) {
-        HashMap<String, Float> playerEconomyMap = new HashMap<>();
-        bowlerHashMap.forEach(new BiConsumer<String, Bowler>() {
+        teamToRunHashMap.forEach(new BiConsumer<String, Integer>() {
             @Override
-            public void accept(String playerName, Bowler bowler) {
-                float economyRate = ((float) bowler.getRun()) / ((float) bowler.getOver());
-                playerEconomyMap.put(playerName, economyRate);
+            public void accept(String s, Integer integer) {
+                System.out.println(s + " : " + integer);
             }
         });
-        return playerEconomyMap;
     }
 
-
-    /* Returns a HashMap where key is a Bowler Name and value is a bowler object which contains all the data related to bowler.
-     * See Bowler Class For more details
-     */
-    private static HashMap<String, Bowler> getBowlerMap(ArrayList<Delivery> deliveries) {
+    private static void findYearWiseTopEconomicalBowlers(ArrayList<Delivery> deliveries, ArrayList<Match> matches, String year, int top) {
+        ArrayList<Match> matchesFilteredByYear = new ArrayList<>();
+        for(Match match : matches) {
+            if(match.getSeason().equals(year)) {
+                matchesFilteredByYear.add(match);
+            }
+        }
+        ArrayList<Delivery> yearWiseDeliveries = new ArrayList<>();
+        for(Match match : matchesFilteredByYear) {
+            for(Delivery delivery : deliveries) {
+                if(match.getId().equals(delivery.getMatchId())) {
+                    yearWiseDeliveries.add(delivery);
+                }
+            }
+        }
+        // Boweler Map
         HashMap<String, Bowler> bowlerHashMap = new HashMap<>();
-        for(Delivery delivery : deliveries) {
+        for(Delivery delivery : yearWiseDeliveries) {
             int run           = Integer.parseInt(delivery.getTotalRuns());
             String key        = delivery.getBowler();
             String lastOverID = delivery.getMatchId()+delivery.getOver();
@@ -221,43 +167,45 @@ public class IPLTestDrive {
             bowler.incrementTotalBall();
             bowlerHashMap.put(key, bowler);
         }
-        return bowlerHashMap;
-    }
 
-    /**
-     * 5. get top players who caught maximum catches in history of IPL.
-     * */
-    private static void topMostCatchesInHistoryPlayers (ArrayList < Delivery > deliveries,int top){
-        utilityLog("top player caught count");
-        HashMap<String, Integer> hashMap = getCatchesByEachPlayer(deliveries);
-        hashMap = getTopMostCatchesPlayers(hashMap, top);
-        utilityPrintResult(hashMap);
-    }
-    // Sorting HashMap of type String -> Integer in descending order and returning top most results.
-    private static HashMap<String, Integer> getTopMostCatchesPlayers(HashMap<String, Integer> hm, int top) {
-        List<Map.Entry<String, Integer> > list = new LinkedList<Map.Entry<String, Integer> >(hm.entrySet());
-
-        Collections.sort(list, new Comparator<Map.Entry<String, Integer> >() {
-            public int compare(Map.Entry<String, Integer> o1,
-                               Map.Entry<String, Integer> o2)
-            {
-                return (o2.getValue()).compareTo(o1.getValue());
+        HashMap<String, Float> playerEconomyMap = new HashMap<>();
+        bowlerHashMap.forEach(new BiConsumer<String, Bowler>() {
+            @Override
+            public void accept(String playerName, Bowler bowler) {
+                float economyRate = ((float) bowler.getRun()) / ((float) bowler.getOver());
+                playerEconomyMap.put(playerName, economyRate);
             }
         });
-        HashMap<String, Integer> topMost = new LinkedHashMap<String, Integer>();
 
+
+        List<Map.Entry<String, Float> > list = new LinkedList<Map.Entry<String, Float> >(playerEconomyMap.entrySet());
+
+        Collections.sort(list, new Comparator<Map.Entry<String, Float> >() {
+            public int compare(Map.Entry<String, Float> o1,
+                               Map.Entry<String, Float> o2)
+            {
+                return (o1.getValue()).compareTo(o2.getValue());
+            }
+        });
+
+        HashMap<String, Float> sortedHashMap = new LinkedHashMap<String, Float>();
         for (int i = 0; i < top; i++) {
-            Map.Entry<String, Integer> aa = list.get(i);
-            topMost.put(aa.getKey(), aa.getValue());
+            Map.Entry<String, Float> aa = list.get(i);
+            sortedHashMap.put(aa.getKey(), aa.getValue());
         }
-        return topMost;
+        sortedHashMap.forEach(new BiConsumer<String, Float>() {
+            @Override
+            public void accept(String s, Float aFloat) {
+                System.out.println(s + " : " + aFloat);
+            }
+        });
     }
-    // Returns the hashmap of player name as a key and number of catches he caught as a Integer.
-    private static HashMap<String,Integer> getCatchesByEachPlayer(ArrayList<Delivery> list) {
+
+    private static void findTopMostCatchesInHistoryPlayers(ArrayList<Delivery> deliveries, int top){
         HashMap<String, Integer> hashMap = new HashMap<>();
         Integer noOfCatches;
         String fielder;
-        for(Delivery delivery : list) {
+        for(Delivery delivery : deliveries) {
             if(!delivery.getDismissalKind().equals("caught")) {
                 continue;
             }
@@ -265,195 +213,105 @@ public class IPLTestDrive {
             noOfCatches = hashMap.get(fielder) == null ? 1 : hashMap.get(fielder) + 1;
             hashMap.put(fielder, noOfCatches);
         }
-        return hashMap;
-    }
-
-    /********************* UTILITY METHODS FOR PROBLEMS ***************************/
-    private static LinkedList<Match> pushElementIntoLinkedList(Match match, String key,HashMap<String, LinkedList<Match>> hmap) {
-        LinkedList<Match> linkedList = hmap.get(key) == null ? new LinkedList<>() : hmap.get(key);
-        linkedList.add(match);
-        return linkedList;
-    }
-    private static ArrayList<Match> filterByYear(ArrayList<Match> matches, String year) {
-        ArrayList<Match> yearlySortedMatchArray = new ArrayList<>();
-        for(Match match : matches) {
-            if(match.getSeason().equals(year)) {
-                yearlySortedMatchArray.add(match);
+        List<Map.Entry<String, Integer>> list = new LinkedList<Map.Entry<String, Integer> >(hashMap.entrySet());
+        Collections.sort(list, new Comparator<Map.Entry<String, Integer> >() {
+            public int compare(Map.Entry<String, Integer> o1,Map.Entry<String, Integer> o2)
+            {
+                return (o2.getValue()).compareTo(o1.getValue());
             }
+        });
+        HashMap<String, Integer> topMost = new LinkedHashMap<String, Integer>();
+        for (int i = 0; i < top; i++) {
+            Map.Entry<String, Integer> aa = list.get(i);
+            topMost.put(aa.getKey(), aa.getValue());
         }
-        return yearlySortedMatchArray;
-    }
-    private static ArrayList<Delivery> filterDeliveryByMatchID(ArrayList<Delivery> deliveries,ArrayList<Match> filteredMatches) {
-        ArrayList<Delivery> sortedDeliveries = new ArrayList<>();
-        for(Match match : filteredMatches) {
-            for(Delivery delivery : deliveries) {
-                if(match.getId().equals(delivery.getMatchId())) {
-                    sortedDeliveries.add(delivery);
-                }
-            }
-        }
-        return sortedDeliveries;
-    }
-
-
-    /* other utility methods */
-    private static void utilityLog(String str) {
-        System.out.println("==============================================================");
-        System.out.println(str.toUpperCase());
-        System.out.println("==============================================================");
-    }
-    private static void utilityPrintResult(HashMap<?, ?> list) {
-        list.forEach(new BiConsumer<Object, Object>() {
+        topMost.forEach(new BiConsumer<String, Integer>() {
             @Override
-            public void accept(Object o1, Object o2) {
-                System.out.println(o1 + " : " + o2);
+            public void accept(String s, Integer integer) {
+                System.out.println(s + " : " + integer);
             }
         });
     }
-
-
-    /********************************* CSV FILES PARSING ****************************
-     * This Section of program is to convert csv to native data set. so that it can be
-     * easily manipulated for all the problems given.
-    *********************************************************************************/
-    /*
-    * Match csv parsing starts here
-    * */
+    /********************************* CSV FILES PARSING ****************************/
     private static ArrayList<Match> parseMatchCSV() {
-        ArrayList<Match> matches = null;
+        ArrayList<Match> matches = new ArrayList<>();
         try {
-            File matchData = new File(matchFile);
             File file = new File(matchFile);
-
-            matches = formatDataForMatches(file);
+            ArrayList<String> lines =  separateLines(file);
+            for(String line : lines) {
+                matches.add(createMatchObject(line));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return matches;
     }
-    private static ArrayList<Match> formatDataForMatches(File file) {
-        ArrayList<Match> matches = new ArrayList<>();
-        ArrayList<String> lines =  separateLines(file);
-        for(String line : lines) {
-            matches.add(createMatchObject(line));
-        }
-        return matches;
-    }
+
     private static Match createMatchObject(String matchTuple) {
         ArrayList<String> list =  readTillCommaAndWhateverYouReadPlaceItIntoAStringArray(matchTuple);
-        String id            = list.get(MATCH_ID);
-        String season        = list.get(MATCH_SEASON);
-        String city          = list.get(MATCH_CITY);
-        String date          = list.get(MATCH_DATE);
-        String team1         = list.get(MATCH_TEAM1);
-        String team2         = list.get(MATCH_TEAM2);
-        String tossWinner    = list.get(MATCH_TOSS_WINNER);
-        String tossDecision  = list.get(MATCH_TOSS_DECISION);
-        String result        = list.get(MATCH_RESULT);
-        String dlApplied     = list.get(MATCH_DL_APPLIED);
-        String winner        = list.get(MATCH_WINNER);
-        String winByRuns     = list.get(MATCH_WIN_BY_RUNS);
-        String winByWickets  = list.get(MATCH_WIN_BY_WICKETS);
-        String playerOfMatch = list.get(MATCH_PLAYER_OF_MATCH);
-        String venue         = list.get(MATCH_VENUE);
-        String umpire1       = list.get(MATCH_UMPIRE1);
-        String umpire2       = list.get(MATCH_UMPIRE2);
-        String umpire3       = list.get(MATCH_UMPIRE3);
-
         Match match = new Match();
-        match.setId(id);
-        match.setSeason(season);
-        match.setCity(city);
-        match.setDate(date);
-        match.setTeam1(team1);
-        match.setTeam2(team2);
-        match.setTossWinner(tossWinner);
-        match.setTossDecision(tossDecision);
-        match.setResult(result);
-        match.setDlApplied(dlApplied);
-        match.setWinner(winner);
-        match.setWinByRuns(winByRuns);
-        match.setWinByWickets(winByWickets);
-        match.setPlayerOfMatch(playerOfMatch);
-        match.setVenue(venue);
-        match.setUmpire1(umpire1);
-        match.setUmpire2(umpire2);
-        match.setUmpire3(umpire3);
-
+        match.setId(list.get(MATCH_ID));
+        match.setSeason(list.get(MATCH_SEASON));
+        match.setCity(list.get(MATCH_CITY));
+        match.setDate(list.get(MATCH_DATE));
+        match.setTeam1(list.get(MATCH_TEAM1));
+        match.setTeam2(list.get(MATCH_TEAM2));
+        match.setTossWinner(list.get(MATCH_TOSS_WINNER));
+        match.setTossDecision(list.get(MATCH_TOSS_DECISION));
+        match.setResult(list.get(MATCH_RESULT));
+        match.setDlApplied(list.get(MATCH_DL_APPLIED));
+        match.setWinner(list.get(MATCH_WINNER));
+        match.setWinByRuns(list.get(MATCH_WIN_BY_RUNS));
+        match.setWinByWickets(list.get(MATCH_WIN_BY_WICKETS));
+        match.setPlayerOfMatch(list.get(MATCH_PLAYER_OF_MATCH));
+        match.setVenue(list.get(MATCH_VENUE));
+        match.setUmpire1(list.get(MATCH_UMPIRE1));
+        match.setUmpire2(list.get(MATCH_UMPIRE2));
+        match.setUmpire3(list.get(MATCH_UMPIRE3));
         return match;
     }
-
     /*
      * Delivery csv parsing starts from here
      */
+    private static Delivery createDeliveryObject(String deliveryTuple) {
+//        ArrayList<String> list = readTillCommaAndWhateverYouReadPlaceItIntoAStringArray(deliveryTuple);
+        ArrayList<String>
+        Delivery delivery = new Delivery();
+        delivery.setMatchId(list.get(DELIVERY_MATCH_ID));
+        delivery.setInning(list.get(DELIVERY_INNING));
+        delivery.setBattingTeam(list.get(DELIVERY_BATTING_TEAM));
+        delivery.setBowlingTeam(list.get(DELIVERY_BOWLING_TEAM));
+        delivery.setOver(list.get(DELIVERY_OVER));
+        delivery.setBall(list.get(DELIVERY_BALL));                                                                                                                                                                                                                                                                                                                                      
+        delivery.setBatsman(list.get(DELIVERY_BATSMAN));
+        delivery.setNonStriker(list.get(DELIVERY_NON_STRIKER));
+        delivery.setBowler(list.get(DELIVERY_BOWLER));
+        delivery.setIsSuperOver(list.get(DELIVERY_IS_SUPER_OVER));
+        delivery.setWideRuns(list.get(DELIVERY_WIDE_RUNS));
+        delivery.setByeRuns(list.get(DELIVERY_BYE_RUNS));
+        delivery.setLegbyeRuns(list.get(DELIVERY_LEGBYE_RUNS));
+        delivery.setNoballRuns(list.get(DELIVERY_NOBALL_RUNS));
+        delivery.setPenaltyRuns(list.get(DELIVERY_PENALTY_RUNS));
+        delivery.setBatsmanRuns(list.get(DELIVERY_BATSMAN_RUNS));
+        delivery.setExtraRuns(list.get(DELIVERY_EXTRA_RUNS));
+        delivery.setTotalRuns(list.get(DELIVERY_TOTAL_RUNS));
+        delivery.setPlayerDismissed(list.get(DELIVERY_PLAYER_DISMISSED));
+        delivery.setDismissalKind(list.get(DELIVERY_DISMISSAL_KIND));
+        delivery.setFielder(list.size() == 21 ?list.get(DELIVERY_FIELDER) : "");
+        return delivery;
+    }
     private static ArrayList<Delivery> parseDeliveryCSV() {
-        ArrayList<Delivery> deliveries = null;
+        ArrayList<Delivery> deliveries = new ArrayList<>();
         try {
             File file = new File(deliveryFile);
-            deliveries = formatDataForDelivery(file);
+            ArrayList<String> lines =  separateLines(file);
+            for(String line : lines) {
+                deliveries.add(createDeliveryObject(line));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return deliveries;
-    }
-    private static ArrayList<Delivery> formatDataForDelivery(File file) {
-        ArrayList<Delivery> deliveries = new ArrayList<>();
-
-        ArrayList<String> lines =  separateLines(file);
-        for(String line : lines) {
-            deliveries.add(createDeliveryObject(line));
-        }
-        return deliveries;
-    }
-    private static Delivery createDeliveryObject(String deliveryTuple) {
-        ArrayList<String> list = readTillCommaAndWhateverYouReadPlaceItIntoAStringArray(deliveryTuple);
-
-        String matchId         = list.get(DELIVERY_MATCH_ID);
-        String inning          = list.get(DELIVERY_INNING);
-        String battingTeam     = list.get(DELIVERY_BATTING_TEAM);
-        String bowlingTeam     = list.get(DELIVERY_BOWLING_TEAM);
-        String over            = list.get(DELIVERY_OVER);
-        String ball            = list.get(DELIVERY_BALL);
-        String batsman         = list.get(DELIVERY_BATSMAN);
-        String nonStriker      = list.get(DELIVERY_NON_STRIKER);
-        String bowler          = list.get(DELIVERY_BOWLER);
-        String isSuperOver     = list.get(DELIVERY_IS_SUPER_OVER);
-        String wideRuns        = list.get(DELIVERY_WIDE_RUNS);
-        String byeRuns         = list.get(DELIVERY_BYE_RUNS);
-        String legbyeRuns      = list.get(DELIVERY_LEGBYE_RUNS);
-        String noballRuns      = list.get(DELIVERY_NOBALL_RUNS);
-        String penaltyRuns     = list.get(DELIVERY_PENALTY_RUNS);
-        String batsmanRuns     = list.get(DELIVERY_BATSMAN_RUNS);
-        String extraRuns       = list.get(DELIVERY_EXTRA_RUNS);
-        String totalRuns       = list.get(DELIVERY_TOTAL_RUNS);
-        String playerDismissed = list.get(DELIVERY_PLAYER_DISMISSED);
-        String dismissalKind   = list.get(DELIVERY_DISMISSAL_KIND);
-        String fielder         = list.size() == 21 ? list.get(DELIVERY_FIELDER) : ""; // if last element exist assign its value
-
-        Delivery delivery = new Delivery();
-        delivery.setMatchId(matchId);
-        delivery.setInning(inning);
-        delivery.setBattingTeam(battingTeam);
-        delivery.setBowlingTeam(bowlingTeam);
-        delivery.setOver(over);
-        delivery.setBall(ball);
-        delivery.setBatsman(batsman);
-        delivery.setNonStriker(nonStriker);
-        delivery.setBowler(bowler);
-        delivery.setIsSuperOver(isSuperOver);
-        delivery.setWideRuns(wideRuns);
-        delivery.setByeRuns(byeRuns);
-        delivery.setLegbyeRuns(legbyeRuns);
-        delivery.setNoballRuns(noballRuns);
-        delivery.setPenaltyRuns(penaltyRuns);
-        delivery.setBatsmanRuns(batsmanRuns);
-        delivery.setExtraRuns(extraRuns);
-        delivery.setTotalRuns(totalRuns);
-        delivery.setPlayerDismissed(playerDismissed);
-        delivery.setDismissalKind(dismissalKind);
-        delivery.setFielder(fielder);
-
-        return delivery;
     }
 
     /* Utility Methods for csv data  parsing */
@@ -469,11 +327,10 @@ public class IPLTestDrive {
         }
         return lines;
     }
-    private static ArrayList<String> readTillCommaAndWhateverYouReadPlaceItIntoAStringArray(String line) {
 
+    private static ArrayList<String> readTillCommaAndWhateverYouReadPlaceItIntoAStringArray(String line) {
         ArrayList<String> list = new ArrayList<>();
         String s = "";
-
         for(int i = 0; i < line.length(); i++) {
             // @TODO seperate this if and else logic to different method.
             if(line.charAt(i) == ',') {
@@ -483,16 +340,12 @@ public class IPLTestDrive {
                 s += line.charAt(i);
             }
         }
-        // if last is comma and is empty, add extra empty string to list
-
         if(s.length() > 0) {
             list.add(s);
         }
         if(line.charAt(line.length() - 1) == ',') {
             list.add("");
         }
-
         return list;
     }
-
 }
