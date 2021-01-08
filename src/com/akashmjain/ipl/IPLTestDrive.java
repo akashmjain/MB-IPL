@@ -70,7 +70,9 @@ public class IPLTestDrive {
     }
 
     /*************************** WRITE CODE FOR SOLVING PROBLEMS *********************/
-    /*  First problem */
+    /**
+     * 1. Number of matches played per year of all the years in IPL.
+     * */
     private static void numberOfMatchesWonOfAllTeamsOverAllYear(ArrayList<Match> matches) {
         utilityLog("number Of Matches Won of all teams over all year");
         HashMap<String, LinkedList<Match>> matchesWonPerTeam = new HashMap<>();
@@ -89,7 +91,9 @@ public class IPLTestDrive {
         utilityPrintResult(noOfMatchesWonPerTeam);
     }
 
-    /* Second problem */
+    /**
+     * 2. Number of matches won of all teams over all the years of IPL.
+     * */
     private static void numberOfMatchesPlayedPerYearForAllYear(ArrayList<Match> matches) {
         utilityLog("number Of Matches played per year for all years");
         HashMap<String, LinkedList<Match>> matchesPerYear = new HashMap<>();
@@ -109,7 +113,9 @@ public class IPLTestDrive {
     }
 
 
-    /* Third Problem */
+    /**
+     * 3. For the year 2016 get the extra runs conceded per team.
+     * */
     private static void yearWiseExtraRunConcededPerTeam(ArrayList<Delivery> deliveries, ArrayList<Match> matches,String year) {
         utilityLog("year Wise Extra Run Conceded Per Team in year " + year);
         HashMap<String, Integer> hashMap = deliveryWithMatchId(deliveries, matches,year);
@@ -132,20 +138,19 @@ public class IPLTestDrive {
     }
 
 
-    /* Fourth Problem */
+    /**
+     * 4. For the year 2015 get the top economical bowlers.
+     * */
     private static void yearWiseTopEconomicalBowler(ArrayList<Delivery> deliveries, ArrayList<Match> matches,String year, int top) {
 
         utilityLog("year Wise top economical Bowler in year " + year);
-        HashMap<String, Float> hashMap = economicalBowlersDeliveryFilter(deliveries, matches, year);
-        hashMap = getTopBestEconomicBowler(hashMap, top);
-        utilityPrintResult(hashMap);
-    }
-    private static HashMap<String, Float> economicalBowlersDeliveryFilter(ArrayList<Delivery> deliveries, ArrayList<Match> matches, String year) {
         ArrayList<Match> filteredByYear = filterByYear(matches, year);
         ArrayList<Delivery> filteredDelivery = filterDeliveryByMatchID(deliveries ,filteredByYear);
         HashMap<String, Float> hashMap = calculateEconomicRate(filteredDelivery);
-        return hashMap;
+        hashMap = getTopBestEconomicBowler(hashMap, top);
+        utilityPrintResult(hashMap);
     }
+    /* Get top economical bowlers based on there economy rate */
     private static HashMap<String, Float> getTopBestEconomicBowler(HashMap<String, Float> hm, int top) {
         List<Map.Entry<String, Float> > list = new LinkedList<Map.Entry<String, Float> >(hm.entrySet());
 
@@ -164,11 +169,13 @@ public class IPLTestDrive {
         }
         return sortedHashMap;
     }
+    /* Calculate economy rate for each bowler */
     private static HashMap<String, Float> calculateEconomicRate(ArrayList<Delivery> filteredDelivery) {
         HashMap<String, Bowler> bowlerHashMap = getBowlerMap(filteredDelivery);
-        return getPlayerEconomyMap(bowlerHashMap);
+        return getBowlerEconomyMap(bowlerHashMap);
     }
-    private static HashMap<String, Float> getPlayerEconomyMap(HashMap<String, Bowler> bowlerHashMap) {
+    /* Get Bowler name to Bowler Object HashMap for easy operation*/
+    private static HashMap<String, Float> getBowlerEconomyMap(HashMap<String, Bowler> bowlerHashMap) {
         HashMap<String, Float> playerEconomyMap = new HashMap<>();
         bowlerHashMap.forEach(new BiConsumer<String, Bowler>() {
             @Override
@@ -179,26 +186,35 @@ public class IPLTestDrive {
         });
         return playerEconomyMap;
     }
+
+
+    /* Returns a HashMap where key is a Bowler Name and value is a bowler object which contains all the data related to bowler.
+     * See Bowler Class For more details
+     */
     private static HashMap<String, Bowler> getBowlerMap(ArrayList<Delivery> deliveries) {
         HashMap<String, Bowler> bowlerHashMap = new HashMap<>();
         for(Delivery delivery : deliveries) {
             int run           = Integer.parseInt(delivery.getTotalRuns());
             String key        = delivery.getBowler();
-            String lastOverID = delivery.getMatchId()+delivery.getOver(); // concatenated ID
+            String lastOverID = delivery.getMatchId()+delivery.getOver();
             Bowler bowler     = bowlerHashMap.get(key);
-
+            // Create new bowler object if there is no entry for Bowler name
             if(bowler == null) {
-                String bowlerName =delivery.getBowler();
+                String bowlerName = delivery.getBowler();
                 bowler = new Bowler();
                 bowler.setName(bowlerName);
                 bowler.setRun(run);
                 bowler.incrementOver();
                 bowler.setLastOver(lastOverID);
-            } else {
+            }
+            // if bowler already exist in HashMap.
+            else {
+                // If over change increment over value.
                 if (!bowler.getLastOver().equals(lastOverID)) {
                     bowler.incrementOver();
                     bowler.setLastOver(lastOverID);
                 }
+                // add run to existing run of bowler
                 bowler.setRun(run + bowler.getRun());
             }
 
@@ -208,13 +224,16 @@ public class IPLTestDrive {
         return bowlerHashMap;
     }
 
-    /* Fifth Problem */
-    private static void topMostCatchesInHistoryPlayers(ArrayList<Delivery> deliveries,int top) {
+    /**
+     * 5. get top players who caught maximum catches in history of IPL.
+     * */
+    private static void topMostCatchesInHistoryPlayers (ArrayList < Delivery > deliveries,int top){
         utilityLog("top player caught count");
         HashMap<String, Integer> hashMap = getCatchesByEachPlayer(deliveries);
         hashMap = getTopMostCatchesPlayers(hashMap, top);
         utilityPrintResult(hashMap);
     }
+    // Sorting HashMap of type String -> Integer in descending order and returning top most results.
     private static HashMap<String, Integer> getTopMostCatchesPlayers(HashMap<String, Integer> hm, int top) {
         List<Map.Entry<String, Integer> > list = new LinkedList<Map.Entry<String, Integer> >(hm.entrySet());
 
@@ -233,6 +252,7 @@ public class IPLTestDrive {
         }
         return topMost;
     }
+    // Returns the hashmap of player name as a key and number of catches he caught as a Integer.
     private static HashMap<String,Integer> getCatchesByEachPlayer(ArrayList<Delivery> list) {
         HashMap<String, Integer> hashMap = new HashMap<>();
         Integer noOfCatches;
@@ -247,8 +267,6 @@ public class IPLTestDrive {
         }
         return hashMap;
     }
-
-    /* If more problems add here */
 
     /********************* UTILITY METHODS FOR PROBLEMS ***************************/
     private static LinkedList<Match> pushElementIntoLinkedList(Match match, String key,HashMap<String, LinkedList<Match>> hmap) {
