@@ -12,8 +12,7 @@ public class IPLTestDrive {
     private final static String matchFile    = "./data/matches.csv";
     private final static String deliveryFile = "./data/deliveries.csv";
 
-
-    /* Match TUPLES */
+    /* Match TUPLES  make everything private*/
     static final int MATCH_ID                   = 0;
     static final int MATCH_SEASON               = 1;
     static final int MATCH_CITY                 = 2;
@@ -33,10 +32,9 @@ public class IPLTestDrive {
     static final int MATCH_UMPIRE2              = 16;
     static final int MATCH_UMPIRE3              = 17;
 
-
-    /* Delivery tuples */
-    static final int DELIVERY_MATCH_ID          = 0;
-    static final int DELIVERY_INNING            = 1;
+    /* Delivery tuples everything private */
+    static final int DELIVERY_MATCH_ID = 0;
+    static final int DELIVERY_INNING         = 1;
     static final int DELIVERY_BATTING_TEAM      = 2;
     static final int DELIVERY_BOWLING_TEAM      = 3;
     static final int DELIVERY_OVER              = 4;
@@ -57,30 +55,27 @@ public class IPLTestDrive {
     static final int DELIVERY_DISMISSAL_KIND    = 19;
     static final int DELIVERY_FIELDER           = 20;
 
-
     public static void main(String[] args) {
-        ArrayList<Match>    matches    = parseMatchCSV();
-        ArrayList<Delivery> deliveries = parseDeliveryCSV();
+        List<Match> matches = getMatchesData(); // write parent here
+        List<Delivery> deliveries = getDeliveriesData();
 
-        numberOfMatchesWonOfAllTeamsOverAllYear(matches);
+//        change all the methods name appropriately
+        findNumberOfMatchesWonPerTeamsOverAllYears(matches);
         numberOfMatchesPlayedPerYearForAllYear(matches);
         yearWiseExtraRunConcededPerTeam(deliveries, matches, "2016");
         yearWiseTopEconomicalBowler(deliveries, matches,"2015", 5);
         topMostCatchesInHistoryPlayers(deliveries, 5);
     }
 
-    /*************************** WRITE CODE FOR SOLVING PROBLEMS *********************/
-    /**
-     * 1. Number of matches played per year of all the years in IPL.
-     * */
-    private static void numberOfMatchesWonOfAllTeamsOverAllYear(ArrayList<Match> matches) {
-        utilityLog("number Of Matches Won of all teams over all year");
+    private static void findNumberOfMatchesWonPerTeamsOverAllYears(List<Match> matches) {
         HashMap<String, LinkedList<Match>> matchesWonPerTeam = new HashMap<>();
         for(Match match : matches) {
             LinkedList<Match> linkedList = pushElementIntoLinkedList(match, match.getWinner(), matchesWonPerTeam);
+            // @TODO: dont do un necessary stuff which is not a problem statement.
             String winner = match.getWinner().equals("") ? "NO WINNER" : match.getWinner();
             matchesWonPerTeam.put(winner, linkedList);
         }
+        // @TODO: dont implement linked list do counter instead on each hit
         HashMap<String, Integer> noOfMatchesWonPerTeam = new HashMap<>();
         matchesWonPerTeam.forEach(new BiConsumer<String, LinkedList<Match>>() {
             @Override
@@ -88,12 +83,14 @@ public class IPLTestDrive {
                 noOfMatchesWonPerTeam.put(s, matches.size());
             }
         });
+
+        utilityLog("number Of Matches Won of all teams over all year");
         utilityPrintResult(noOfMatchesWonPerTeam);
     }
-
     /**
      * 2. Number of matches won of all teams over all the years of IPL.
      * */
+    // @TODO: Change
     private static void numberOfMatchesPlayedPerYearForAllYear(ArrayList<Match> matches) {
         utilityLog("number Of Matches played per year for all years");
         HashMap<String, LinkedList<Match>> matchesPerYear = new HashMap<>();
@@ -116,10 +113,10 @@ public class IPLTestDrive {
     /**
      * 3. For the year 2016 get the extra runs conceded per team.
      * */
+    // @TODO: Merge all methods in one for each problems
     private static void yearWiseExtraRunConcededPerTeam(ArrayList<Delivery> deliveries, ArrayList<Match> matches,String year) {
-        utilityLog("year Wise Extra Run Conceded Per Team in year " + year);
-        HashMap<String, Integer> hashMap = deliveryWithMatchId(deliveries, matches,year);
-        utilityPrintResult(hashMap);
+//        utilityLog("year Wise Extra Run Conceded Per Team in year " + year);
+        utilityPrintResult(deliveryWithMatchId(deliveries, matches,year));
     }
     private static HashMap<String, Integer> deliveryWithMatchId(ArrayList<Delivery> deliveries, ArrayList<Match> matches, String year) {
         ArrayList<Match> yearWiseMatches = filterByYear(matches, year);
@@ -144,7 +141,7 @@ public class IPLTestDrive {
     private static void yearWiseTopEconomicalBowler(ArrayList<Delivery> deliveries, ArrayList<Match> matches,String year, int top) {
 
         utilityLog("year Wise top economical Bowler in year " + year);
-        ArrayList<Match> filteredByYear = filterByYear(matches, year);
+        ArrayList<Match> filteredByYear = filterByYear(matches, year); // get matches Played in year
         ArrayList<Delivery> filteredDelivery = filterDeliveryByMatchID(deliveries ,filteredByYear);
         HashMap<String, Float> hashMap = calculateEconomicRate(filteredDelivery);
         hashMap = getTopBestEconomicBowler(hashMap, top);
@@ -274,6 +271,7 @@ public class IPLTestDrive {
         linkedList.add(match);
         return linkedList;
     }
+
     private static ArrayList<Match> filterByYear(ArrayList<Match> matches, String year) {
         ArrayList<Match> yearlySortedMatchArray = new ArrayList<>();
         for(Match match : matches) {
@@ -283,6 +281,7 @@ public class IPLTestDrive {
         }
         return yearlySortedMatchArray;
     }
+
     private static ArrayList<Delivery> filterDeliveryByMatchID(ArrayList<Delivery> deliveries,ArrayList<Match> filteredMatches) {
         ArrayList<Delivery> sortedDeliveries = new ArrayList<>();
         for(Match match : filteredMatches) {
@@ -297,11 +296,13 @@ public class IPLTestDrive {
 
 
     /* other utility methods */
+    // @TODO: dont create seperate utility for small things
     private static void utilityLog(String str) {
         System.out.println("==============================================================");
         System.out.println(str.toUpperCase());
         System.out.println("==============================================================");
     }
+
     private static void utilityPrintResult(HashMap<?, ?> list) {
         list.forEach(new BiConsumer<Object, Object>() {
             @Override
@@ -319,18 +320,17 @@ public class IPLTestDrive {
     /*
     * Match csv parsing starts here
     * */
-    private static ArrayList<Match> parseMatchCSV() {
+    private static ArrayList<Match> getMatchesData() {
         ArrayList<Match> matches = null;
         try {
-            File matchData = new File(matchFile);
             File file = new File(matchFile);
-
             matches = formatDataForMatches(file);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return matches;
     }
+    // @TODO: only 8 methods including main method.
     private static ArrayList<Match> formatDataForMatches(File file) {
         ArrayList<Match> matches = new ArrayList<>();
         ArrayList<String> lines =  separateLines(file);
@@ -340,11 +340,12 @@ public class IPLTestDrive {
         return matches;
     }
     private static Match createMatchObject(String matchTuple) {
+        // @TODO: dont create String variables just push that in match object.
         ArrayList<String> list =  readTillCommaAndWhateverYouReadPlaceItIntoAStringArray(matchTuple);
-        String id            = list.get(MATCH_ID);
-        String season        = list.get(MATCH_SEASON);
-        String city          = list.get(MATCH_CITY);
-        String date          = list.get(MATCH_DATE);
+        String id = list.get(MATCH_ID);
+        String season = list.get(MATCH_SEASON);
+        String city = list.get(MATCH_CITY);
+        String date = list.get(MATCH_DATE);
         String team1         = list.get(MATCH_TEAM1);
         String team2         = list.get(MATCH_TEAM2);
         String tossWinner    = list.get(MATCH_TOSS_WINNER);
@@ -386,7 +387,7 @@ public class IPLTestDrive {
     /*
      * Delivery csv parsing starts from here
      */
-    private static ArrayList<Delivery> parseDeliveryCSV() {
+    private static ArrayList<Delivery> getDeliveriesData() {
         ArrayList<Delivery> deliveries = null;
         try {
             File file = new File(deliveryFile);
@@ -496,3 +497,4 @@ public class IPLTestDrive {
     }
 
 }
+ 
