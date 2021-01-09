@@ -1,53 +1,63 @@
 package com.akashmjain.ipl;
 
+import javax.xml.transform.Result;
 import java.io.File;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.*;
 import java.util.function.BiConsumer;
 
 public class IPLTestDrive {
+    private static final String JDBC_DRIVER = "org.postgresql.Driver";
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/ipl_db";
+    private static final String DB_USER_NAME = "postgres";
+    private static final String DB_USER_PASSWORD = "password";
+
     private final static String matchFile    = "./data/matches.csv";
     private final static String deliveryFile = "./data/deliveries.csv";
 
-    private static final int MATCH_ID = 0;
-    private static final int MATCH_SEASON = 1;
-    private static final int MATCH_CITY = 2;
-    private static final int MATCH_DATE = 3;
-    private static final int MATCH_TEAM1 = 4;
-    private static final int MATCH_TEAM2 = 5;
-    private static final int MATCH_TOSS_WINNER = 6;
-    private static final int MATCH_TOSS_DECISION= 7;
-    private static final int MATCH_RESULT = 8;
-    private static final int MATCH_DL_APPLIED = 9;
-    private static final int MATCH_WINNER = 10;
-    private static final int MATCH_WIN_BY_RUNS = 11;
-    private static final int MATCH_WIN_BY_WICKETS = 12;
-    private static final int MATCH_PLAYER_OF_MATCH = 13;
-    private static final int MATCH_VENUE = 14;
-    private static final int MATCH_UMPIRE1 = 15;
-    private static final int MATCH_UMPIRE2 = 16;
-    private static final int MATCH_UMPIRE3 = 17;
+    private static final int MATCH_ID = 1;
+    private static final int MATCH_SEASON = 2;
+    private static final int MATCH_CITY = 3;
+    private static final int MATCH_DATE = 4;
+    private static final int MATCH_TEAM1 = 5;
+    private static final int MATCH_TEAM2 = 6;
+    private static final int MATCH_TOSS_WINNER = 7;
+    private static final int MATCH_TOSS_DECISION= 8;
+    private static final int MATCH_RESULT = 9;
+    private static final int MATCH_DL_APPLIED = 10;
+    private static final int MATCH_WINNER = 11;
+    private static final int MATCH_WIN_BY_RUNS = 12;
+    private static final int MATCH_WIN_BY_WICKETS = 13;
+    private static final int MATCH_PLAYER_OF_MATCH = 14;
+    private static final int MATCH_VENUE = 15;
+    private static final int MATCH_UMPIRE1 = 16;
+    private static final int MATCH_UMPIRE2 = 17;
+    private static final int MATCH_UMPIRE3 = 18;
 
-    private static final int DELIVERY_MATCH_ID = 0;
-    private static final int DELIVERY_INNING = 1;
-    private static final int DELIVERY_BATTING_TEAM = 2;
-    private static final int DELIVERY_BOWLING_TEAM = 3;
-    private static final int DELIVERY_OVER = 4;
-    private static final int DELIVERY_BALL = 5;
-    private static final int DELIVERY_BATSMAN = 6;
-    private static final int DELIVERY_NON_STRIKER = 7;
-    private static final int DELIVERY_BOWLER = 8;
-    private static final int DELIVERY_IS_SUPER_OVER = 9;
-    private static final int DELIVERY_WIDE_RUNS = 10;
-    private static final int DELIVERY_BYE_RUNS = 11;
-    private static final int DELIVERY_LEGBYE_RUNS = 12;
-    private static final int DELIVERY_NOBALL_RUNS = 13;
-    private static final int DELIVERY_PENALTY_RUNS = 14;
-    private static final int DELIVERY_BATSMAN_RUNS= 15;
-    private static final int DELIVERY_EXTRA_RUNS = 16;
-    private static final int DELIVERY_TOTAL_RUNS = 17;
-    private static final int DELIVERY_PLAYER_DISMISSED = 18;
-    private static final int DELIVERY_DISMISSAL_KIND = 19;
-    private static final int DELIVERY_FIELDER = 20;
+    private static final int DELIVERY_MATCH_ID = 1;
+    private static final int DELIVERY_INNING = 2;
+    private static final int DELIVERY_BATTING_TEAM = 3;
+    private static final int DELIVERY_BOWLING_TEAM = 4;
+    private static final int DELIVERY_OVER = 5;
+    private static final int DELIVERY_BALL = 6;
+    private static final int DELIVERY_BATSMAN = 7;
+    private static final int DELIVERY_NON_STRIKER = 8;
+    private static final int DELIVERY_BOWLER = 9;
+    private static final int DELIVERY_IS_SUPER_OVER = 10;
+    private static final int DELIVERY_WIDE_RUNS = 11;
+    private static final int DELIVERY_BYE_RUNS = 12;
+    private static final int DELIVERY_LEGBYE_RUNS = 13;
+    private static final int DELIVERY_NOBALL_RUNS = 14;
+    private static final int DELIVERY_PENALTY_RUNS = 15;
+    private static final int DELIVERY_BATSMAN_RUNS= 16;
+    private static final int DELIVERY_EXTRA_RUNS = 17;
+    private static final int DELIVERY_TOTAL_RUNS = 18;
+    private static final int DELIVERY_PLAYER_DISMISSED = 19;
+    private static final int DELIVERY_DISMISSAL_KIND = 20;
+    private static final int DELIVERY_FIELDER = 21;
 
     public static void main(String[] args) {
         List<Match> matches = getMatchesData();
@@ -158,25 +168,24 @@ public class IPLTestDrive {
 
     private static List<Delivery> getDeliveryData() {
         List<Delivery> deliveries = new ArrayList<>();
+        String query = "SELECT * FROM deliveries;";
         try {
-            File file = new File(deliveryFile);
-            List<String> lines = new ArrayList<>();
-            Scanner sc = new Scanner(file);
-            while(sc.hasNext()) {
-                lines.add(sc.nextLine());
-            }
-            for(String line : lines) {
-                List<String> list = Arrays.asList(line.split(","));
+            Connection conn = null;
+            Class.forName(JDBC_DRIVER);
+            conn = DriverManager.getConnection(DB_URL, DB_USER_NAME, DB_USER_PASSWORD);
+            Statement statement = conn.createStatement();
+            ResultSet rows = statement.executeQuery(query);
+            while(rows.next()) {
                 Delivery delivery = new Delivery();
-                delivery.setMatchId(list.get(DELIVERY_MATCH_ID));
-                delivery.setBattingTeam(list.get(DELIVERY_BATTING_TEAM));
-                delivery.setExtraRuns(list.get(DELIVERY_EXTRA_RUNS));
-                delivery.setBowler(list.get(DELIVERY_BOWLER));
-                delivery.setOver(list.get(DELIVERY_OVER));
-                delivery.setTotalRuns(list.get(DELIVERY_TOTAL_RUNS));
-                delivery.setIsSuperOver(list.get(DELIVERY_IS_SUPER_OVER));
-                delivery.setDismissalKind(list.size() >= DELIVERY_DISMISSAL_KIND ? list.get(DELIVERY_DISMISSAL_KIND) : "");
-                delivery.setFielder(list.size() >= DELIVERY_FIELDER + 1 ?list.get(DELIVERY_FIELDER) : "");
+                delivery.setMatchId(rows.getString(DELIVERY_MATCH_ID));
+                delivery.setBattingTeam(rows.getString(DELIVERY_BATTING_TEAM));
+                delivery.setExtraRuns(rows.getString(DELIVERY_EXTRA_RUNS));
+                delivery.setBowler(rows.getString(DELIVERY_BOWLER));
+                delivery.setOver(rows.getString(DELIVERY_OVER));
+                delivery.setTotalRuns(rows.getString(DELIVERY_TOTAL_RUNS));
+                delivery.setIsSuperOver(rows.getString(DELIVERY_IS_SUPER_OVER));
+                delivery.setDismissalKind(rows.getString(DELIVERY_DISMISSAL_KIND) == null ? "" : rows.getString(DELIVERY_DISMISSAL_KIND));
+                delivery.setFielder(rows.getString(DELIVERY_FIELDER));
                 deliveries.add(delivery);
             }
         } catch (Exception e) {
@@ -187,19 +196,19 @@ public class IPLTestDrive {
 
     private static List<Match> getMatchesData() {
         List<Match> matches = new ArrayList<>();
+        String query = "SELECT * FROM matches;";
         try {
-            File file = new File(matchFile);
-            List<String> lines = new ArrayList<>();
-            Scanner sc = new Scanner(file);
-            while(sc.hasNext()) {
-                lines.add(sc.nextLine());
-            }
-            for(String line : lines) {
-                List<String> list = Arrays.asList(line.split(","));
+            Connection conn = null;
+            Class.forName(JDBC_DRIVER);
+            conn = DriverManager.getConnection(DB_URL, DB_USER_NAME, DB_USER_PASSWORD);
+            Statement statement = conn.createStatement();
+            ResultSet rows = statement.executeQuery(query);
+
+            while(rows.next()) {
                 Match match = new Match();
-                match.setId(list.get(MATCH_ID));
-                match.setWinner(list.get(MATCH_WINNER));
-                match.setSeason(list.get(MATCH_SEASON));
+                match.setId(rows.getString(MATCH_ID));
+                match.setWinner(rows.getString(MATCH_WINNER));
+                match.setSeason(rows.getString(MATCH_SEASON));
                 matches.add(match);
             }
         } catch (Exception e) {
